@@ -35,9 +35,6 @@ router.post("/", async (req, res) => {
                 require: false,
             });
 
-            console.log(getHashedPassword(form.data.password));
-            console.log(admin.get("password"));
-
             if (!admin) {
                 req.flash("error_messages", "Sorry, the authentication details you provided does not work.");
                 res.redirect("/");
