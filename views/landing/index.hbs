@@ -1,0 +1,14 @@
+{{#extends "base"}}
+
+    {{#block "content"}}
+        <h1>Admin Login</h1>
+        <p>To access the admin panel, please login with your admin credentials below!</p>
+
+        <form method="POST">
+            {{{form}}}
+            <input type="submit" class="btn btn-primary mt-3" value="Login" />
+        </form>
+
+    {{/block}}
+
+{{/extends}}
