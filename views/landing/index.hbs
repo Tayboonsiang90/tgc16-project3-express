@@ -5,6 +5,7 @@
         <p>To access the admin panel, please login with your admin credentials below!</p>
 
         <form method="POST">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
             {{{form}}}
             <input type="submit" class="btn btn-primary mt-3" value="Login" />
         </form>
