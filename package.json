@@ -1,0 +1,19 @@
+{
+  "name": "tgc16-project3-express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tayboonsiang90/tgc16-project3-express.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tayboonsiang90/tgc16-project3-express/issues"
+  },
+  "homepage": "https://github.com/Tayboonsiang90/tgc16-project3-express#readme"
+}
