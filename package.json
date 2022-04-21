@@ -18,9 +18,11 @@
   },
   "homepage": "https://github.com/Tayboonsiang90/tgc16-project3-express#readme",
   "dependencies": {
+    "db-migrate-pg": "^1.2.2",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "hbs": "^4.2.0",
+    "pg": "^8.7.3",
     "wax-on": "^1.2.2"
   }
 }
