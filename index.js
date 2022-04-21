@@ -23,10 +23,14 @@ app.use(
     })
 );
 
-async function main() {}
+async function main() {
+    app.get("/", (req, res) => {
+        res.send("It's alive!");
+    });
+}
 
 main();
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
     console.log("Server has started");
 });

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/Tayboonsiang90/tgc16-project3-express/issues"
   },
-  "homepage": "https://github.com/Tayboonsiang90/tgc16-project3-express#readme"
+  "homepage": "https://github.com/Tayboonsiang90/tgc16-project3-express#readme",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "hbs": "^4.2.0",
+    "wax-on": "^1.2.2"
+  }
 }
