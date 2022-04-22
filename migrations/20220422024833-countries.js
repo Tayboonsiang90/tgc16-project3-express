@@ -15,15 +15,14 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-    return db.createTable("admins", {
-        id: { type: "int", primaryKey: true, autoIncrement: true },
-        username: { type: "string", length: 100, notNull: true },
-        password: { type: "string", length: 100, notNull: true },
+    return db.createTable("countries", {
+        id: { type: "int", primaryKey: true, autoIncrement: true, unsigned: true },
+        name: { type: "string", length: 200, notNull: true },
     });
 };
 
 exports.down = function (db) {
-    return db.dropTable("admins");
+    return db.dropTable("countries");
 };
 
 exports._meta = {

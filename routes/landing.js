@@ -15,7 +15,6 @@ const getHashedPassword = (password) => {
 };
 
 router.get("/", (req, res) => {
-    console.log(req.session.admin)
     const loginForm = createLoginForm();
     res.render("landing/index", {
         form: loginForm.toHTML(bootstrapField),

@@ -12,11 +12,9 @@ router.get("/", checkIfAuthenticated, (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-    console.log(req.session.admin)
     req.session.admin = null;
     req.flash("success_messages", "Goodbye");
     res.redirect("/");
-    console.log(req.session.admin);
 });
 
 module.exports = router;
