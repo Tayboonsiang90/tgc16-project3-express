@@ -14,8 +14,8 @@ exports.setup = function (options, seedLink) {
     seed = seedLink;
 };
 
-exports.up = function (db) {
-    db.addColumn("arts", "vault_id", {
+exports.up = async function (db) {
+    await db.addColumn("arts", "vault_id", {
         type: "int",
         unsigned: true,
         notNull: true,
@@ -23,7 +23,7 @@ exports.up = function (db) {
             name: "art_vault_fk",
             table: "arts",
             rules: {
-                onDelete: "restrict",
+                onDelete: "cascade",
                 onUpdate: "restrict",
             },
             mapping: "id",
@@ -38,7 +38,7 @@ exports.up = function (db) {
             name: "art_artist_fk",
             table: "arts",
             rules: {
-                onDelete: "restrict",
+                onDelete: "cascade",
                 onUpdate: "restrict",
             },
             mapping: "id",

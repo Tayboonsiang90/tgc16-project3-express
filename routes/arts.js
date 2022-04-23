@@ -6,14 +6,14 @@ const { bootstrapField, createArtForm } = require("../forms");
 // import in the CheckIfAuthenticated middleware
 const { checkIfAuthenticated } = require("../middlewares");
 
-const { Art, Artist, Vault } = require("../models");
+const { Art, Artist, Vault, Tag, Media } = require("../models");
 
 async function fetchArt(artId) {
     const art = await Art.where({
         id: artId,
     }).fetch({
         require: true,
-        withRelated: ["tags, medias"],
+        withRelated: ["artist", "vault", "tags", "medias"],
     });
 
     return art;
@@ -36,11 +36,12 @@ async function fetchMedias() {
 }
 
 async function fetchTags() {
+    console.log("trying");
     return await Tag.fetchAll().map((tag) => [tag.get("id"), tag.get("name")]);
 }
 
 router.get("/", checkIfAuthenticated, async (req, res) => {
-    let arts = await Art.collection().fetch({ withRelated: ["artist", "vault"] });
+    let arts = await Art.collection().fetch({ withRelated: ["artist", "vault", "tags", "medias"] });
 
     res.render("arts/index", {
         arts: arts.toJSON(),
@@ -63,16 +64,19 @@ router.get("/create", checkIfAuthenticated, async (req, res) => {
 router.post("/create", async (req, res) => {
     let allArtists = await fetchArtists();
     let allVaults = await fetchVaults();
+    let allTags = await fetchTags();
+    let allMedias = await fetchMedias();
 
     const createArtHTML = createArtForm(allVaults, allArtists, allTags, allMedias);
 
     createArtHTML.handle(req, {
         success: async (form) => {
-            // separate out tags from the other product data
+            // separate out tags from the other art data
             // as not to cause an error when we create
-            // the new product
+            // the new art
+            console.log(form.data);
             let { tags, medias, ...formData } = form.data;
-            form.data.total_share = 10000;
+            formData.total_share = 10000;
             const art = new Art(formData);
             await art.save();
             // save the many to many relationship
@@ -97,18 +101,23 @@ router.get("/:art_id/update", async (req, res) => {
     let art = await fetchArt(req.params.art_id);
     let allArtists = await fetchArtists();
     let allVaults = await fetchVaults();
+    let allTags = await fetchTags();
+    let allMedias = await fetchMedias();
 
     const editArtHTML = createArtForm(allVaults, allArtists, allTags, allMedias);
 
     // fill in the existing values
-    editArtHTML.fields.first_name.value = art.get("first_name");
-    editArtHTML.fields.last_name.value = art.get("last_name");
-    editArtHTML.fields.profile.value = art.get("profile");
+    editArtHTML.fields.name.value = art.get("name");
+    editArtHTML.fields.description.value = art.get("description");
+    editArtHTML.fields.year.value = art.get("year");
     editArtHTML.fields.vault_id.value = art.get("vault_id");
     editArtHTML.fields.artist_id.value = art.get("artist_id");
     // fill in the multi-select for the tags
-    let selectedTags = await product.related("tags").pluck("id");
+    let selectedTags = await art.related("tags").pluck("id");
     editArtHTML.fields.tags.value = selectedTags;
+    // fill in the multi-select for the medias
+    let selectedMedias = await art.related("medias").pluck("id");
+    editArtHTML.fields.medias.value = selectedMedias;
 
     res.render("arts/update", {
         form: editArtHTML.toHTML(bootstrapField),
@@ -121,6 +130,8 @@ router.post("/:art_id/update", async (req, res) => {
     let art = await fetchArt(req.params.art_id);
     let allArtists = await fetchArtists();
     let allVaults = await fetchVaults();
+    let allTags = await fetchTags();
+    let allMedias = await fetchMedias();
 
     const editArtHTML = createArtForm(allVaults, allArtists, allTags, allMedias);
 
@@ -136,11 +147,11 @@ router.post("/:art_id/update", async (req, res) => {
             await art.tags().detach(tagToRemove);
             await art.tags().attach(tagIds);
 
-            let mediaIds = tags.split(",");
-            let existingMediaIds = await art.related("tags").pluck("id");
+            let mediaIds = medias.split(",");
+            let existingMediaIds = await art.related("medias").pluck("id");
             let mediaToRemove = existingMediaIds.filter((id) => mediaIds.includes(id) === false);
-            await art.tags().detach(mediaToRemove);
-            await art.tags().attach(mediaIds);
+            await art.medias().detach(mediaToRemove);
+            await art.medias().attach(mediaIds);
 
             res.redirect("/arts");
         },

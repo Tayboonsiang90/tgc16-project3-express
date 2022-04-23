@@ -14,12 +14,14 @@ exports.setup = function (options, seedLink) {
     seed = seedLink;
 };
 
-exports.up = function (db) {
-    return db.createTable("admins", {
+exports.up = async function (db) {
+    await db.createTable("admins", {
         id: { type: "int", primaryKey: true, autoIncrement: true },
         username: { type: "string", length: 100, notNull: true },
         password: { type: "string", length: 100, notNull: true },
     });
+
+    return db.insert("admins", ["username", "password"], ["root", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg="]);
 };
 
 exports.down = function (db) {
