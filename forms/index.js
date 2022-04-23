@@ -45,5 +45,31 @@ const createLoginForm = () => {
     });
 };
 
+const createCountryForm = () => {
+    return forms.create({
+        name: fields.string({
+            required: true,
+            errorAfterField: true,
+        }),
+    });
+};
 
-module.exports = { bootstrapField, createLoginForm };
+const createMediaForm = () => {
+    return forms.create({
+        name: fields.string({
+            required: true,
+            errorAfterField: true,
+        }),
+    });
+};
+
+const createTagForm = () => {
+    return forms.create({
+        name: fields.string({
+            required: true,
+            errorAfterField: true,
+        }),
+    });
+};
+
+module.exports = { bootstrapField, createLoginForm, createCountryForm, createMediaForm, createTagForm };

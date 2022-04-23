@@ -1,0 +1,12 @@
+{{#extends "base"}}
+
+    {{#block "content"}}
+        <h1>Update Media: {{media.name}}</h1>
+        <form method="POST">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+            {{{form}}}
+            <input type="submit" value="Update Media" class="btn btn-primary mt-3" />
+        </form>
+    {{/block}}
+
+{{/extends}}
