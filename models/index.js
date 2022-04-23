@@ -6,6 +6,9 @@ const Admin = bookshelf.model("Admin", {
 
 const Country = bookshelf.model("Country", {
     tableName: "countries",
+    vaults() {
+        return this.belongsTo("Vault");
+    },
 });
 
 const Media = bookshelf.model("Media", {
@@ -16,4 +19,11 @@ const Tag = bookshelf.model("Tag", {
     tableName: "tags",
 });
 
-module.exports = { Admin, Country, Media, Tag };
+const Vault = bookshelf.model("Vault", {
+    tableName: "vaults",
+    country() {
+        return this.belongsTo("Country");
+    },
+});
+
+module.exports = { Admin, Country, Media, Tag, Vault };

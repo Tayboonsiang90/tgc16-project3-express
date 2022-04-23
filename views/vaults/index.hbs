@@ -1,0 +1,54 @@
+{{#extends "base"}}
+
+    {{#block "content"}}
+        <h1>Vaults</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Postal</th>
+                    <th>Country</th>
+                    <th>Update</th>
+                    <th>Delete</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                {{#each vaults}}
+                    <tr>
+                        <td>
+                            {{this.name}}
+                        </td>
+                        <td>
+                            {{this.address}}
+                        </td>
+                        <td>
+                            {{this.postal}}
+                        </td>
+                        <td>
+                            {{this.country.name}}
+                        </td>
+                        <td>
+                            <a href="/vaults/{{this.id}}/update" class="btn btn-success">Update</a>
+                        </td>
+                        <td>
+                            <a href="/vaults/{{this.id}}/delete" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+
+        <div class="mt-5">
+            <form method="POST">
+                <h1>Add a Vault</h1>
+                <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+                {{{form}}}
+                <input type="submit" value="Add Vault" class="btn btn-primary mt-2" />
+            </form>
+        </div>
+    {{/block}}
+
+{{/extends}}

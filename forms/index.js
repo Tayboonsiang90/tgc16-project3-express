@@ -3,6 +3,7 @@ const forms = require("forms");
 // create some shortcuts
 const fields = forms.fields;
 const validators = forms.validators;
+var widgets = require("forms").widgets;
 
 var bootstrapField = function (name, object) {
     if (!Array.isArray(object.widget.classes)) {
@@ -50,6 +51,9 @@ const createCountryForm = () => {
         name: fields.string({
             required: true,
             errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
         }),
     });
 };
@@ -59,6 +63,9 @@ const createMediaForm = () => {
         name: fields.string({
             required: true,
             errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
         }),
     });
 };
@@ -68,8 +75,48 @@ const createTagForm = () => {
         name: fields.string({
             required: true,
             errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
         }),
     });
 };
 
-module.exports = { bootstrapField, createLoginForm, createCountryForm, createMediaForm, createTagForm };
+const createVaultForm = (countries) => {
+    return forms.create({
+        name: fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+        }),
+        address: fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+        }),
+        postal: fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+            validators: [validators.integer()],
+        }),
+        country_id: fields.string({
+            label: "Country",
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+            widget: widgets.select(),
+            choices: countries,
+        }),
+    });
+};
+
+module.exports = { bootstrapField, createLoginForm, createCountryForm, createMediaForm, createTagForm, createVaultForm };

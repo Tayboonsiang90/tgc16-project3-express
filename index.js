@@ -57,6 +57,7 @@ const landingRoutes = require("./routes/landing");
 const countryRoutes = require("./routes/countries");
 const tagRoutes = require("./routes/tags");
 const mediaRoutes = require("./routes/medias");
+const vaultRoutes = require("./routes/vaults");
 const adminRoutes = require("./routes/admin");
 
 // enable CSRF
@@ -81,6 +82,7 @@ async function main() {
     app.use("/countries", countryRoutes);
     app.use("/medias", mediaRoutes);
     app.use("/tags", tagRoutes);
+    app.use("/vaults", vaultRoutes);
 }
 
 main();
