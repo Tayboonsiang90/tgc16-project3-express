@@ -1,0 +1,36 @@
+{{#extends "base"}}
+
+    {{#block "content"}}
+    <a href="/admin/logout" class="btn btn-primary mt-3">Create</a> 
+    <h1>Countries</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+
+    </thead>
+    <tbody>
+        {{#each countries}}
+            <tr>
+                <td>
+                    {{this.id}}
+                </td>
+                <td>
+                    {{this.name}}
+                </td>
+                <td>
+                    <a href="/admin/logout" class="btn btn-success">Update</a> 
+                </td>
+                <td>
+                    <a href="/admin/logout" class="btn btn-danger">Delete</a> 
+                </td>
+            </tr>
+        {{/each}}
+    </tbody>
+    {{/block}}
+
+{{/extends}}

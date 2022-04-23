@@ -54,15 +54,16 @@ app.use(function (req, res, next) {
 
 // import in routes
 const landingRoutes = require("./routes/landing");
+const countryRoutes = require("./routes/countries");
 const adminRoutes = require("./routes/admin");
 
 // enable CSRF
 app.use(csrf());
 // Share CSRF with hbs files
-app.use(function(req,res,next){
+app.use(function (req, res, next) {
     res.locals.csrfToken = req.csrfToken();
     next();
-})
+});
 app.use(function (err, req, res, next) {
     if (err && err.code == "EBADCSRFTOKEN") {
         req.flash("error_messages", "The form has expired. Please try again");
@@ -75,6 +76,7 @@ app.use(function (err, req, res, next) {
 async function main() {
     app.use("/", landingRoutes);
     app.use("/admin", adminRoutes);
+    app.use("/countries", countryRoutes);
 }
 
 main();

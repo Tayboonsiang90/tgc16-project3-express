@@ -54,14 +54,14 @@ router.post("/", async (req, res) => {
                     res.redirect("/admin/");
                     console.log("Redirect should have happened!");
                 } else {
-                    console.log("WTF?");
+                    console.log("Error with your details... Its wrong.");
                     req.flash("error_messages", "Sorry, the authentication details you provided does not work.");
                     res.redirect("/");
                 }
             }
         },
         error: (form) => {
-            console.log("WTF?");
+            console.log("Error with form.. Cannot Login");
             req.flash("error_messages", "There are some problems logging you in. Please fill in the form again");
             res.render("landing/index", {
                 form: form.toHTML(bootstrapField),
