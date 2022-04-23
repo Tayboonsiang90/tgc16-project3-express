@@ -1,0 +1,16 @@
+{{#extends "base"}}
+
+    {{#block "content"}}
+
+        <div class="mt-5">
+            <form method="POST">
+                <h1>Add an Art</h1>
+                <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+                {{{form}}}
+                <input type="submit" value="Add Art" class="btn btn-primary mt-2" />
+            </form>
+        </div>
+
+    {{/block}}
+
+{{/extends}}

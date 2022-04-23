@@ -119,4 +119,105 @@ const createVaultForm = (countries) => {
     });
 };
 
-module.exports = { bootstrapField, createLoginForm, createCountryForm, createMediaForm, createTagForm, createVaultForm };
+const createArtistForm = (countries) => {
+    return forms.create({
+        first_name: fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+        }),
+        last_name: fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+        }),
+        profile: fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+        }),
+        country_id: fields.string({
+            label: "Country",
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+            widget: widgets.select(),
+            choices: countries,
+        }),
+    });
+};
+
+const createArtForm = (vaults, artists, medias, tags) => {
+    return forms.create({
+        name: fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+        }),
+        description: fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+        }),
+        year: fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+            validators: [validators.integer()],
+        }),
+        vault_id: fields.string({
+            label: "Vault",
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+            widget: widgets.select(),
+            choices: vaults,
+        }),
+        artist_id: fields.string({
+            label: "Artist",
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+            widget: widgets.select(),
+            choices: artists,
+        }),
+        medias: fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+            widget: widgets.multipleSelect(),
+            choices: medias,
+        }),
+        tags: fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+            widget: widgets.multipleSelect(),
+            choices: tags,
+        }),
+    });
+};
+
+module.exports = { bootstrapField, createLoginForm, createCountryForm, createMediaForm, createTagForm, createVaultForm, createArtistForm, createArtForm };

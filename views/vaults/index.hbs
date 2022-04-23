@@ -1,7 +1,16 @@
 {{#extends "base"}}
 
     {{#block "content"}}
-        <h1>Vaults</h1>
+        <a href="/admin" class="btn btn-lg btn-secondary">Back</a>
+        <div class="mt-3 border border-info p-3">
+            <form method="POST">
+                <h1>Add a Vault</h1>
+                <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+                {{{form}}}
+                <input type="submit" value="Add Vault" class="btn btn-primary mt-2" />
+            </form>
+        </div>
+        <h1 class="mt-3">Vaults</h1>
 
         <table class="table">
             <thead>
@@ -40,15 +49,6 @@
                 {{/each}}
             </tbody>
         </table>
-
-        <div class="mt-5">
-            <form method="POST">
-                <h1>Add a Vault</h1>
-                <input type="hidden" name="_csrf" value="{{csrfToken}}" />
-                {{{form}}}
-                <input type="submit" value="Add Vault" class="btn btn-primary mt-2" />
-            </form>
-        </div>
     {{/block}}
 
 {{/extends}}

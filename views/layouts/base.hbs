@@ -60,7 +60,7 @@
             {{! Flash Messages  }}
             {{#if success_messages}}
                 {{#each success_messages}}
-                    <div class="alert alert-success">
+                    <div class="alert alert-success mt-3">
                         {{this}}
                     </div>
                 {{/each}}
@@ -68,14 +68,14 @@
 
             {{#if error_messages}}
                 {{#each error_messages}}
-                    <div class="alert alert-danger">
+                    <div class="alert alert-danger mt-3">
                         {{this}}
                     </div>
                 {{/each}}
 
             {{/if}}
             {{! Content Block  }}
-            <div class="mt-5">
+            <div class="mt-3">
                 {{#block "content"}}{{/block}}
             </div>
         </div>

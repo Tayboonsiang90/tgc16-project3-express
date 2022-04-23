@@ -59,6 +59,8 @@ const tagRoutes = require("./routes/tags");
 const mediaRoutes = require("./routes/medias");
 const vaultRoutes = require("./routes/vaults");
 const adminRoutes = require("./routes/admin");
+const artRoutes = require("./routes/arts");
+const artistRoutes = require("./routes/artists");
 
 // enable CSRF
 app.use(csrf());
@@ -83,6 +85,8 @@ async function main() {
     app.use("/medias", mediaRoutes);
     app.use("/tags", tagRoutes);
     app.use("/vaults", vaultRoutes);
+    app.use("/arts", artRoutes);
+    app.use("/artists", artistRoutes);
 }
 
 main();
