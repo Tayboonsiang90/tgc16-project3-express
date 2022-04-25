@@ -16,7 +16,12 @@ async function fetchCountries() {
     });
 }
 
+const getAllVaults = async () => {
+    return await Vault.fetchAll();
+};
+
 module.exports = {
     fetchVault,
     fetchCountries,
+    getAllVaults,
 };

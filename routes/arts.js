@@ -9,7 +9,6 @@ const { checkIfAuthenticated } = require("../middlewares");
 const { Art } = require("../models");
 const dataLayer = require("../dal/arts");
 
-
 router.get("/", checkIfAuthenticated, async (req, res) => {
     let arts = await Art.collection().fetch({ withRelated: ["artist", "vault", "tags", "medias"] });
 
@@ -48,7 +47,6 @@ router.post("/create", async (req, res) => {
             // as not to cause an error when we create
             // the new art
             let { tags, medias, ...formData } = form.data;
-            formData.total_share = 10000;
             const art = new Art(formData);
             await art.save();
 
@@ -86,6 +84,7 @@ router.get("/:art_id/update", async (req, res) => {
     editArtHTML.fields.vault_id.value = art.get("vault_id");
     editArtHTML.fields.artist_id.value = art.get("artist_id");
     editArtHTML.fields.image_url.value = art.get("image_url");
+    editArtHTML.fields.total_share.value = art.get("total_share");
 
     // fill in the multi-select for the tags
     let selectedTags = await art.related("tags").pluck("id");

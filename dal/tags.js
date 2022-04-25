@@ -10,6 +10,11 @@ async function fetchTag(tagId) {
     return tag;
 }
 
+const getAllTags = async () => {
+    return await Tag.fetchAll();
+};
+
 module.exports = {
     fetchTag,
+    getAllTags,
 };

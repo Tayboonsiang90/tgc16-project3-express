@@ -16,9 +16,12 @@ async function fetchCountries() {
     });
 }
 
+const getAllArtists = async () => {
+    return await Artist.fetchAll();
+};
+
 module.exports = {
     fetchArtist,
     fetchCountries,
+    getAllArtists,
 };
-
-

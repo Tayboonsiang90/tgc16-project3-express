@@ -185,6 +185,15 @@ const createArtForm = (vaults, artists, tags, medias) => {
             },
             validators: [validators.integer()],
         }),
+        total_share: fields.string({
+            required: true,
+            value: 10000,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+            validators: [validators.integer()],
+        }),
         vault_id: fields.string({
             label: "Vault",
             required: true,

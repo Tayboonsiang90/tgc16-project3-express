@@ -10,6 +10,11 @@ async function fetchCountry(countryId) {
     return country;
 }
 
+const getAllCountries = async () => {
+    return await Country.fetchAll();
+};
+
 module.exports = {
     fetchCountry,
+    getAllCountries,
 };

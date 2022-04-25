@@ -10,6 +10,11 @@ async function fetchMedia(mediaId) {
     return media;
 }
 
+const getAllMedias = async () => {
+    return await Media.fetchAll();
+};
+
 module.exports = {
     fetchMedia,
+    getAllMedias,
 };

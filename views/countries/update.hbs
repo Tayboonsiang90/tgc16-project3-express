@@ -1,7 +1,8 @@
 {{#extends "base"}}
 
     {{#block "content"}}
-        <h1>Update Country: {{country.name}}</h1>
+        <a href="/countries" class="btn btn-lg btn-secondary">Back</a>
+        <h1 class="mt-3">Update Country: {{country.name}}</h1>
         <form method="POST">
             <input type="hidden" name="_csrf" value="{{csrfToken}}" />
             {{{form}}}

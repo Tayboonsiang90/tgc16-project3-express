@@ -6,6 +6,7 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const FileStore = require("session-file-store")(session);
 const csrf = require("csurf");
+const cors = require("cors");
 
 // create an instance of express app
 let app = express();
@@ -26,6 +27,8 @@ app.use(
         extended: false,
     })
 );
+
+app.use(cors());
 
 // set up sessions
 app.use(
@@ -62,12 +65,30 @@ const adminRoutes = require("./routes/admin");
 const artRoutes = require("./routes/arts");
 const artistRoutes = require("./routes/artists");
 const cloudinaryRoutes = require("./routes/cloudinary.js");
+const api = {
+    countries: require("./routes/api/countries"),
+    artists: require("./routes/api/artists"),
+    medias: require("./routes/api/medias"),
+    tags: require("./routes/api/tags"),
+    vaults: require("./routes/api/vaults"),
+    arts: require("./routes/api/arts"),
+};
 
 // enable CSRF
-app.use(csrf());
+const csurfInstance = csrf();
+app.use(function (req, res, next) {
+    // exclude whatever url we want from CSRF protection
+    if (req.url === "/checkout/process_payment" || req.url.slice(0, 5) == "/api/") {
+        return next();
+    }
+    csurfInstance(req, res, next);
+});
 // Share CSRF with hbs files
 app.use(function (req, res, next) {
-    res.locals.csrfToken = req.csrfToken();
+    if (req.csrfToken) {
+        res.locals.csrfToken = req.csrfToken();
+    }
+
     next();
 });
 app.use(function (err, req, res, next) {
@@ -89,6 +110,12 @@ async function main() {
     app.use("/arts", artRoutes);
     app.use("/artists", artistRoutes);
     app.use("/cloudinary", cloudinaryRoutes);
+    app.use("/api/countries", express.json(), api.countries);
+    app.use("/api/artists", express.json(), api.artists);
+    app.use("/api/medias", express.json(), api.medias);
+    app.use("/api/tags", express.json(), api.tags);
+    app.use("/api/vaults", express.json(), api.vaults);
+    app.use("/api/arts", express.json(), api.arts);
 }
 
 main();

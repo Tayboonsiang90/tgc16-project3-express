@@ -12,6 +12,9 @@ const Country = bookshelf.model("Country", {
     artists() {
         return this.hasMany("Artist");
     },
+    users() {
+        return this.hasMany("User");
+    },
 });
 
 const Media = bookshelf.model("Media", {
@@ -64,4 +67,15 @@ const Art = bookshelf.model("Art", {
     },
 });
 
-module.exports = { Admin, Country, Media, Tag, Vault, Art, Artist };
+const User = bookshelf.model("User", {
+    tableName: "users",
+    country() {
+        return this.belongsTo("Country");
+    },
+});
+
+const BlacklistedToken = bookshelf.model("BlacklistedToken", {
+    tableName: "blacklisted_tokens",
+});
+
+module.exports = { BlacklistedToken, Admin, Country, Media, Tag, Vault, Art, Artist, User };

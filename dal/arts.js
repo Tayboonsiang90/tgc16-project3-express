@@ -31,10 +31,15 @@ async function fetchArt(artId) {
     return art;
 }
 
+const getAllArts = async () => {
+    return await Art.fetchAll();
+};
+
 module.exports = {
     fetchArtists,
     fetchVaults,
     fetchMedias,
     fetchTags,
     fetchArt,
+    getAllArts,
 };

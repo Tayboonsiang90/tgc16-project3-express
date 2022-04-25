@@ -2,14 +2,15 @@
 
     {{#block "content"}}
 
-        <div class="mt-5">
+        <div>
+        <a href="/artists" class="btn btn-lg btn-secondary">Back</a>
             <form method="POST">
-                <h1>Add an Artist</h1>
+                <h1 class="mt-3">Add an Artist</h1>
                 <input type="hidden" name="_csrf" value="{{csrfToken}}" />
                 {{{form}}}
                 <div>
                     <a href="#" class="btn btn-primary mt-2" id="upload_widget">Upload Image</a>
-                    <img src="" style="display:none" id="uploaded_image" />
+                    <img  class="img-thumbnail" src="" style="display:none" id="uploaded_image" />
                 </div>
                 <input type="submit" value="Add Artist" class="btn btn-primary mt-2" />
             </form>
