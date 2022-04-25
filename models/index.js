@@ -33,7 +33,7 @@ const Vault = bookshelf.model("Vault", {
     country() {
         return this.belongsTo("Country");
     },
-    art() {
+    arts() {
         return this.hasMany("Art");
     },
 });
@@ -43,7 +43,7 @@ const Artist = bookshelf.model("Artist", {
     country() {
         return this.belongsTo("Country");
     },
-    art() {
+    arts() {
         return this.hasMany("Art");
     },
 });

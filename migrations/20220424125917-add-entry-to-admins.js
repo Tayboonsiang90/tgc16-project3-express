@@ -14,17 +14,13 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function (db) {
-    return db.createTable("tags", {
-        id: { type: "int", primaryKey: true, autoIncrement: true, unsigned: true },
-        name: { type: "string", length: 100, notNull: true },
-    });
+exports.up = function(db) {
+  return db.insert("admins", ["username", "password"], ["root", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg="]);
 };
 
-exports.down = function (db) {
-    return db.dropTable("tags");
+exports.down = function(db) {
+  return null;
 };
-
 
 exports._meta = {
   "version": 1

@@ -15,14 +15,14 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-    return db.createTable("arts_tags", {
+    return db.createTable("arts_medias", {
         id: { type: "int", primaryKey: true, autoIncrement: true },
         art_id: {
             type: "int",
             notNull: true,
             unsigned: true,
             foreignKey: {
-                name: "arts_tags_art_fk",
+                name: "arts_medias_art_fk",
                 table: "arts",
                 rules: {
                     onDelete: "CASCADE",
@@ -31,13 +31,13 @@ exports.up = function (db) {
                 mapping: "id",
             },
         },
-        tag_id: {
+        media_id: {
             type: "int",
             notNull: true,
             unsigned: true,
             foreignKey: {
-                name: "arts_tags_tag_fk",
-                table: "tags",
+                name: "arts_medias_media_fk",
+                table: "medias",
                 rules: {
                     onDelete: "CASCADE",
                     onUpdate: "RESTRICT",
@@ -49,7 +49,7 @@ exports.up = function (db) {
 };
 
 exports.down = function (db) {
-    return null;
+    return db.dropTable("arts_medias");
 };
 
 exports._meta = {

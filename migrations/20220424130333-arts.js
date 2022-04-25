@@ -27,6 +27,7 @@ exports.up = function (db) {
 exports.down = function (db) {
     return db.dropTable("arts");
 };
+
 exports._meta = {
     version: 1,
 };

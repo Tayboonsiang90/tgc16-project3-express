@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Tayboonsiang90/tgc16-project3-express#readme",
   "dependencies": {
     "bookshelf": "^1.2.0",
+    "cloudinary": "^1.29.1",
     "connect-flash": "^0.1.1",
     "csurf": "^1.11.0",
     "db-migrate": "^0.11.13",

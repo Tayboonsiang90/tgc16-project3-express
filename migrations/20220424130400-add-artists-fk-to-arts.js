@@ -14,29 +14,14 @@ exports.setup = function (options, seedLink) {
     seed = seedLink;
 };
 
-exports.up = async function (db) {
-    await db.addColumn("arts", "vault_id", {
-        type: "int",
-        unsigned: true,
-        notNull: true,
-        foreignKey: {
-            name: "art_vault_fk",
-            table: "arts",
-            rules: {
-                onDelete: "cascade",
-                onUpdate: "restrict",
-            },
-            mapping: "id",
-        },
-    });
-
+exports.up = function (db) {
     return db.addColumn("arts", "artist_id", {
         type: "int",
         unsigned: true,
         notNull: true,
         foreignKey: {
             name: "art_artist_fk",
-            table: "arts",
+            table: "artists",
             rules: {
                 onDelete: "cascade",
                 onUpdate: "restrict",

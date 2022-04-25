@@ -6,27 +6,11 @@ const { bootstrapField, createArtistForm } = require("../forms");
 // import in the CheckIfAuthenticated middleware
 const { checkIfAuthenticated } = require("../middlewares");
 
-const { Artist, Country } = require("../models");
-
-async function fetchArtist(artistId) {
-    const artist = await Artist.where({
-        id: artistId,
-    }).fetch({
-        require: true,
-    });
-
-    return artist;
-}
-
-async function fetchCountries() {
-    return await Country.fetchAll().map((country) => {
-        return [country.get("id"), country.get("name")];
-    });
-}
+const { Artist } = require("../models");
+const dataLayer = require("../dal/artists");
 
 router.get("/", checkIfAuthenticated, async (req, res) => {
     let artists = await Artist.collection().fetch({ withRelated: ["country"] });
-    console.log(artists.toJSON())
 
     res.render("artists/index", {
         artists: artists.toJSON(),
@@ -34,17 +18,20 @@ router.get("/", checkIfAuthenticated, async (req, res) => {
 });
 
 router.get("/create", checkIfAuthenticated, async (req, res) => {
-    let allCountries = await fetchCountries();
+    let allCountries = await dataLayer.fetchCountries();
 
     const createArtistHTML = createArtistForm(allCountries);
 
     res.render("artists/create", {
         form: createArtistHTML.toHTML(bootstrapField),
+        cloudinaryName: process.env.CLOUDINARY_NAME,
+        cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+        cloudinaryPreset: process.env.CLOUDINARY_UPLOAD_PRESET,
     });
 });
 
 router.post("/create", async (req, res) => {
-    let allCountries = await fetchCountries();
+    let allCountries = await dataLayer.fetchCountries();
 
     const createArtistHTML = createArtistForm(allCountries);
 
@@ -64,8 +51,8 @@ router.post("/create", async (req, res) => {
 
 router.get("/:artist_id/update", async (req, res) => {
     // retrieve the artist
-    let artist = await fetchArtist(req.params.artist_id);
-    let allCountries = await fetchCountries();
+    let artist = await dataLayer.fetchArtist(req.params.artist_id);
+    let allCountries = await dataLayer.fetchCountries();
 
     const editArtistHTML = createArtistForm(allCountries);
 
@@ -74,17 +61,21 @@ router.get("/:artist_id/update", async (req, res) => {
     editArtistHTML.fields.last_name.value = artist.get("last_name");
     editArtistHTML.fields.profile.value = artist.get("profile");
     editArtistHTML.fields.country_id.value = artist.get("country_id");
+    editArtistHTML.fields.image_url.value = artist.get("image_url");
 
     res.render("artists/update", {
         form: editArtistHTML.toHTML(bootstrapField),
         artist: artist.toJSON(),
+        cloudinaryName: process.env.CLOUDINARY_NAME,
+        cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+        cloudinaryPreset: process.env.CLOUDINARY_UPLOAD_PRESET,
     });
 });
 
 router.post("/:artist_id/update", async (req, res) => {
     // retrieve the artist
-    let artist = await fetchArtist(req.params.artist_id);
-    let allCountries = await fetchCountries();
+    let artist = await dataLayer.fetchArtist(req.params.artist_id);
+    let allCountries = await dataLayer.fetchCountries();
 
     const editArtistHTML = createArtistForm(allCountries);
 
@@ -105,7 +96,7 @@ router.post("/:artist_id/update", async (req, res) => {
 
 router.get("/:artist_id/delete", async (req, res) => {
     // fetch the artist that we want to delete
-    let artist = await fetchArtist(req.params.artist_id);
+    let artist = await dataLayer.fetchArtist(req.params.artist_id);
 
     res.render("artists/delete", {
         artist: artist.toJSON(),
@@ -114,7 +105,7 @@ router.get("/:artist_id/delete", async (req, res) => {
 
 router.post("/:artist_id/delete", async (req, res) => {
     // fetch the artist that we want to delete
-    let artist = await fetchArtist(req.params.artist_id);
+    let artist = await dataLayer.fetchArtist(req.params.artist_id);
     await artist.destroy();
     res.redirect("/artists");
 });

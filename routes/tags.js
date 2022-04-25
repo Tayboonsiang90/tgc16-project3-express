@@ -7,16 +7,8 @@ const { bootstrapField, createTagForm } = require("../forms");
 const { checkIfAuthenticated } = require("../middlewares");
 
 const { Tag } = require("../models");
+const dataLayer = require("../dal/tags");
 
-async function fetchTag(tagId) {
-    const tag = await Tag.where({
-        id: tagId,
-    }).fetch({
-        require: true,
-    });
-
-    return tag;
-}
 
 router.get("/", checkIfAuthenticated, async (req, res) => {
     let tags = await Tag.collection().fetch();
@@ -32,10 +24,8 @@ router.post("/", async (req, res) => {
     createTagHTML.handle(req, {
         success: async (form) => {
             const tag = new Tag();
-            console.log(form.data.name);
             tag.set("name", form.data.name);
             await tag.save();
-            console.log("Added to database");
             res.redirect("/tags");
         },
         error: async (form) => {
@@ -48,7 +38,7 @@ router.post("/", async (req, res) => {
 
 router.get("/:tag_id/update", async (req, res) => {
     // retrieve the tag
-    let tag = await fetchTag(req.params.tag_id);
+    let tag = await dataLayer.fetchTag(req.params.tag_id);
 
     const editTagHTML = createTagForm();
 
@@ -63,7 +53,7 @@ router.get("/:tag_id/update", async (req, res) => {
 
 router.post("/:tag_id/update", async (req, res) => {
     // retrieve the tag
-    let tag = await fetchTag(req.params.tag_id);
+    let tag = await dataLayer.fetchTag(req.params.tag_id);
 
     // process the form
     const editTagHTML = createTagForm();
@@ -84,7 +74,7 @@ router.post("/:tag_id/update", async (req, res) => {
 
 router.get("/:tag_id/delete", async (req, res) => {
     // fetch the tag that we want to delete
-    let tag = await fetchTag(req.params.tag_id);
+    let tag = await dataLayer.fetchTag(req.params.tag_id);
 
     res.render("tags/delete", {
         tag: tag.toJSON(),
@@ -93,7 +83,7 @@ router.get("/:tag_id/delete", async (req, res) => {
 
 router.post("/:tag_id/delete", async (req, res) => {
     // fetch the tag that we want to delete
-    let tag = await fetchTag(req.params.tag_id);
+    let tag = await dataLayer.fetchTag(req.params.tag_id);
     await tag.destroy();
     res.redirect("/tags");
 });

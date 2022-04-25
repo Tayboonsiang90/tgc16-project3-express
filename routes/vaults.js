@@ -6,38 +6,26 @@ const { bootstrapField, createVaultForm } = require("../forms");
 // import in the CheckIfAuthenticated middleware
 const { checkIfAuthenticated } = require("../middlewares");
 
-const { Vault, Country } = require("../models");
-
-async function fetchVault(vaultId) {
-    const vault = await Vault.where({
-        id: vaultId,
-    }).fetch({
-        require: true,
-    });
-
-    return vault;
-}
-
-async function fetchCountries() {
-    return await Country.fetchAll().map((country) => {
-        return [country.get("id"), country.get("name")];
-    });
-}
+const { Vault } = require("../models");
+const dataLayer = require("../dal/vaults");
 
 router.get("/", checkIfAuthenticated, async (req, res) => {
     let vaults = await Vault.collection().fetch({ withRelated: ["country"] });
-    let allCountries = await fetchCountries();
+    let allCountries = await dataLayer.fetchCountries();
 
     const createVaultHTML = createVaultForm(allCountries);
 
     res.render("vaults/index", {
         vaults: vaults.toJSON(),
         form: createVaultHTML.toHTML(bootstrapField),
+        cloudinaryName: process.env.CLOUDINARY_NAME,
+        cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+        cloudinaryPreset: process.env.CLOUDINARY_UPLOAD_PRESET,
     });
 });
 
 router.post("/", async (req, res) => {
-    let allCountries = await fetchCountries();
+    let allCountries = await dataLayer.fetchCountries();
 
     const createVaultHTML = createVaultForm(allCountries);
 
@@ -57,8 +45,8 @@ router.post("/", async (req, res) => {
 
 router.get("/:vault_id/update", async (req, res) => {
     // retrieve the vault
-    let vault = await fetchVault(req.params.vault_id);
-    let allCountries = await fetchCountries();
+    let vault = await dataLayer.fetchVault(req.params.vault_id);
+    let allCountries = await dataLayer.fetchCountries();
 
     const editVaultHTML = createVaultForm(allCountries);
 
@@ -67,17 +55,21 @@ router.get("/:vault_id/update", async (req, res) => {
     editVaultHTML.fields.address.value = vault.get("address");
     editVaultHTML.fields.postal.value = vault.get("postal");
     editVaultHTML.fields.country_id.value = vault.get("country_id");
+    editVaultHTML.fields.image_url.value = vault.get("image_url");
 
     res.render("vaults/update", {
         form: editVaultHTML.toHTML(bootstrapField),
         vault: vault.toJSON(),
+        cloudinaryName: process.env.CLOUDINARY_NAME,
+        cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+        cloudinaryPreset: process.env.CLOUDINARY_UPLOAD_PRESET,
     });
 });
 
 router.post("/:vault_id/update", async (req, res) => {
     // retrieve the vault
-    let vault = await fetchVault(req.params.vault_id);
-    let allCountries = await fetchCountries();
+    let vault = await dataLayer.fetchVault(req.params.vault_id);
+    let allCountries = await dataLayer.fetchCountries();
 
     const editVaultHTML = createVaultForm(allCountries);
 
@@ -98,7 +90,7 @@ router.post("/:vault_id/update", async (req, res) => {
 
 router.get("/:vault_id/delete", async (req, res) => {
     // fetch the vault that we want to delete
-    let vault = await fetchVault(req.params.vault_id);
+    let vault = await dataLayer.fetchVault(req.params.vault_id);
 
     res.render("vaults/delete", {
         vault: vault.toJSON(),
@@ -107,7 +99,7 @@ router.get("/:vault_id/delete", async (req, res) => {
 
 router.post("/:vault_id/delete", async (req, res) => {
     // fetch the vault that we want to delete
-    let vault = await fetchVault(req.params.vault_id);
+    let vault = await dataLayer.fetchVault(req.params.vault_id);
     await vault.destroy();
     res.redirect("/vaults");
 });

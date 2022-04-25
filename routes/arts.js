@@ -6,39 +6,9 @@ const { bootstrapField, createArtForm } = require("../forms");
 // import in the CheckIfAuthenticated middleware
 const { checkIfAuthenticated } = require("../middlewares");
 
-const { Art, Artist, Vault, Tag, Media } = require("../models");
+const { Art } = require("../models");
+const dataLayer = require("../dal/arts");
 
-async function fetchArt(artId) {
-    const art = await Art.where({
-        id: artId,
-    }).fetch({
-        require: true,
-        withRelated: ["artist", "vault", "tags", "medias"],
-    });
-
-    return art;
-}
-
-async function fetchArtists() {
-    return await Artist.fetchAll().map((artist) => {
-        return [artist.get("id"), artist.get("first_name") + " " + artist.get("last_name")];
-    });
-}
-
-async function fetchVaults() {
-    return await Vault.fetchAll().map((vault) => {
-        return [vault.get("id"), vault.get("name")];
-    });
-}
-
-async function fetchMedias() {
-    return await Media.fetchAll().map((media) => [media.get("id"), media.get("name")]);
-}
-
-async function fetchTags() {
-    console.log("trying");
-    return await Tag.fetchAll().map((tag) => [tag.get("id"), tag.get("name")]);
-}
 
 router.get("/", checkIfAuthenticated, async (req, res) => {
     let arts = await Art.collection().fetch({ withRelated: ["artist", "vault", "tags", "medias"] });
@@ -49,23 +19,26 @@ router.get("/", checkIfAuthenticated, async (req, res) => {
 });
 
 router.get("/create", checkIfAuthenticated, async (req, res) => {
-    let allArtists = await fetchArtists();
-    let allVaults = await fetchVaults();
-    let allTags = await fetchTags();
-    let allMedias = await fetchMedias();
+    let allArtists = await dataLayer.fetchArtists();
+    let allVaults = await dataLayer.fetchVaults();
+    let allTags = await dataLayer.fetchTags();
+    let allMedias = await dataLayer.fetchMedias();
 
     const createArtHTML = createArtForm(allVaults, allArtists, allTags, allMedias);
 
     res.render("arts/create", {
         form: createArtHTML.toHTML(bootstrapField),
+        cloudinaryName: process.env.CLOUDINARY_NAME,
+        cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+        cloudinaryPreset: process.env.CLOUDINARY_UPLOAD_PRESET,
     });
 });
 
 router.post("/create", async (req, res) => {
-    let allArtists = await fetchArtists();
-    let allVaults = await fetchVaults();
-    let allTags = await fetchTags();
-    let allMedias = await fetchMedias();
+    let allArtists = await dataLayer.fetchArtists();
+    let allVaults = await dataLayer.fetchVaults();
+    let allTags = await dataLayer.fetchTags();
+    let allMedias = await dataLayer.fetchMedias();
 
     const createArtHTML = createArtForm(allVaults, allArtists, allTags, allMedias);
 
@@ -74,11 +47,11 @@ router.post("/create", async (req, res) => {
             // separate out tags from the other art data
             // as not to cause an error when we create
             // the new art
-            console.log(form.data);
             let { tags, medias, ...formData } = form.data;
             formData.total_share = 10000;
             const art = new Art(formData);
             await art.save();
+
             // save the many to many relationship
             if (tags) {
                 await art.tags().attach(tags.split(","));
@@ -98,11 +71,11 @@ router.post("/create", async (req, res) => {
 
 router.get("/:art_id/update", async (req, res) => {
     // retrieve the art
-    let art = await fetchArt(req.params.art_id);
-    let allArtists = await fetchArtists();
-    let allVaults = await fetchVaults();
-    let allTags = await fetchTags();
-    let allMedias = await fetchMedias();
+    let art = await dataLayer.fetchArt(req.params.art_id);
+    let allArtists = await dataLayer.fetchArtists();
+    let allVaults = await dataLayer.fetchVaults();
+    let allTags = await dataLayer.fetchTags();
+    let allMedias = await dataLayer.fetchMedias();
 
     const editArtHTML = createArtForm(allVaults, allArtists, allTags, allMedias);
 
@@ -112,6 +85,8 @@ router.get("/:art_id/update", async (req, res) => {
     editArtHTML.fields.year.value = art.get("year");
     editArtHTML.fields.vault_id.value = art.get("vault_id");
     editArtHTML.fields.artist_id.value = art.get("artist_id");
+    editArtHTML.fields.image_url.value = art.get("image_url");
+
     // fill in the multi-select for the tags
     let selectedTags = await art.related("tags").pluck("id");
     editArtHTML.fields.tags.value = selectedTags;
@@ -122,16 +97,19 @@ router.get("/:art_id/update", async (req, res) => {
     res.render("arts/update", {
         form: editArtHTML.toHTML(bootstrapField),
         art: art.toJSON(),
+        cloudinaryName: process.env.CLOUDINARY_NAME,
+        cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+        cloudinaryPreset: process.env.CLOUDINARY_UPLOAD_PRESET,
     });
 });
 
 router.post("/:art_id/update", async (req, res) => {
     // retrieve the art
-    let art = await fetchArt(req.params.art_id);
-    let allArtists = await fetchArtists();
-    let allVaults = await fetchVaults();
-    let allTags = await fetchTags();
-    let allMedias = await fetchMedias();
+    let art = await dataLayer.fetchArt(req.params.art_id);
+    let allArtists = await dataLayer.fetchArtists();
+    let allVaults = await dataLayer.fetchVaults();
+    let allTags = await dataLayer.fetchTags();
+    let allMedias = await dataLayer.fetchMedias();
 
     const editArtHTML = createArtForm(allVaults, allArtists, allTags, allMedias);
 
@@ -166,7 +144,7 @@ router.post("/:art_id/update", async (req, res) => {
 
 router.get("/:art_id/delete", async (req, res) => {
     // fetch the art that we want to delete
-    let art = await fetchArt(req.params.art_id);
+    let art = await dataLayer.fetchArt(req.params.art_id);
 
     res.render("arts/delete", {
         art: art.toJSON(),
@@ -175,7 +153,7 @@ router.get("/:art_id/delete", async (req, res) => {
 
 router.post("/:art_id/delete", async (req, res) => {
     // fetch the art that we want to delete
-    let art = await fetchArt(req.params.art_id);
+    let art = await dataLayer.fetchArt(req.params.art_id);
     await art.destroy();
     res.redirect("/arts");
 });

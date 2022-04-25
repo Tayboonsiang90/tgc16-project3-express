@@ -15,14 +15,14 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-    return db.createTable("countries", {
-        id: { type: "int", primaryKey: true, autoIncrement: true, unsigned: true },
-        name: { type: "string", length: 200, notNull: true },
+    return db.addColumn("vaults", "image_url", {
+        type: "string",
+        length: 1000,
     });
 };
 
 exports.down = function (db) {
-    return db.dropTable("countries");
+    return null;
 };
 
 exports._meta = {

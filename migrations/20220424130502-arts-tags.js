@@ -1,28 +1,28 @@
-'use strict';
+"use strict";
 
 var dbm;
 var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
-  dbm = options.dbmigrate;
-  type = dbm.dataType;
-  seed = seedLink;
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
+    dbm = options.dbmigrate;
+    type = dbm.dataType;
+    seed = seedLink;
 };
 
 exports.up = function (db) {
-    return db.createTable("arts_medias", {
+    return db.createTable("arts_tags", {
         id: { type: "int", primaryKey: true, autoIncrement: true },
         art_id: {
             type: "int",
             notNull: true,
             unsigned: true,
             foreignKey: {
-                name: "arts_medias_art_fk",
+                name: "arts_tags_art_fk",
                 table: "arts",
                 rules: {
                     onDelete: "CASCADE",
@@ -31,13 +31,13 @@ exports.up = function (db) {
                 mapping: "id",
             },
         },
-        media_id: {
+        tag_id: {
             type: "int",
             notNull: true,
             unsigned: true,
             foreignKey: {
-                name: "arts_medias_media_fk",
-                table: "medias",
+                name: "arts_tags_tag_fk",
+                table: "tags",
                 rules: {
                     onDelete: "CASCADE",
                     onUpdate: "RESTRICT",
@@ -48,10 +48,10 @@ exports.up = function (db) {
     });
 };
 
-exports.down = function(db) {
-  return null;
+exports.down = function (db) {
+    return db.dropTable("arts_tags");
 };
 
 exports._meta = {
-  "version": 1
+    version: 1,
 };

@@ -15,17 +15,17 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function (db) {
-    return db.createTable("vaults", {
-        id: { type: "int", unsigned: true, primaryKey: true, autoIncrement: true },
-        name: { type: "string", length: 500 },
-        address: { type: "string", length: 1000 },
-        postal: { type: "int"},
+    return db.createTable("admins", {
+        id: { type: "int", primaryKey: true, autoIncrement: true },
+        username: { type: "string", length: 100, notNull: true },
+        password: { type: "string", length: 100, notNull: true },
     });
 };
 
 exports.down = function (db) {
-    return db.dropTable("vaults");
+    return db.dropTable("admins");
 };
+
 
 exports._meta = {
   "version": 1

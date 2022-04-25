@@ -3,7 +3,7 @@ const forms = require("forms");
 // create some shortcuts
 const fields = forms.fields;
 const validators = forms.validators;
-var widgets = require("forms").widgets;
+var widgets = forms.widgets;
 
 var bootstrapField = function (name, object) {
     if (!Array.isArray(object.widget.classes)) {
@@ -116,6 +116,9 @@ const createVaultForm = (countries) => {
             widget: widgets.select(),
             choices: countries,
         }),
+        image_url: fields.string({
+            widget: widgets.hidden(),
+        }),
     });
 };
 
@@ -152,10 +155,13 @@ const createArtistForm = (countries) => {
             widget: widgets.select(),
             choices: countries,
         }),
+        image_url: fields.string({
+            widget: widgets.hidden(),
+        }),
     });
 };
 
-const createArtForm = (vaults, artists, medias, tags) => {
+const createArtForm = (vaults, artists, tags, medias) => {
     return forms.create({
         name: fields.string({
             required: true,
@@ -216,6 +222,9 @@ const createArtForm = (vaults, artists, medias, tags) => {
             },
             widget: widgets.multipleSelect(),
             choices: tags,
+        }),
+        image_url: fields.string({
+            widget: widgets.hidden(),
         }),
     });
 };

@@ -7,16 +7,7 @@ const { bootstrapField, createMediaForm } = require("../forms");
 const { checkIfAuthenticated } = require("../middlewares");
 
 const { Media } = require("../models");
-
-async function fetchMedia(mediaId) {
-    const media = await Media.where({
-        id: mediaId,
-    }).fetch({
-        require: true,
-    });
-
-    return media;
-}
+const dataLayer = require("../dal/medias");
 
 router.get("/", checkIfAuthenticated, async (req, res) => {
     let medias = await Media.collection().fetch();
@@ -32,10 +23,8 @@ router.post("/", async (req, res) => {
     createMediaHTML.handle(req, {
         success: async (form) => {
             const media = new Media();
-            console.log(form.data.name);
             media.set("name", form.data.name);
             await media.save();
-            console.log("Added to database");
             res.redirect("/medias");
         },
         error: async (form) => {
@@ -48,7 +37,7 @@ router.post("/", async (req, res) => {
 
 router.get("/:media_id/update", async (req, res) => {
     // retrieve the media
-    let media = await fetchMedia(req.params.media_id);
+    let media = await dataLayer.fetchMedia(req.params.media_id);
 
     const editMediaHTML = createMediaForm();
 
@@ -63,7 +52,7 @@ router.get("/:media_id/update", async (req, res) => {
 
 router.post("/:media_id/update", async (req, res) => {
     // retrieve the media
-    let media = await fetchMedia(req.params.media_id);
+    let media = await dataLayer.fetchMedia(req.params.media_id);
 
     // process the form
     const editMediaHTML = createMediaForm();
@@ -84,7 +73,7 @@ router.post("/:media_id/update", async (req, res) => {
 
 router.get("/:media_id/delete", async (req, res) => {
     // fetch the media that we want to delete
-    let media = await fetchMedia(req.params.media_id);
+    let media = await dataLayer.fetchMedia(req.params.media_id);
 
     res.render("medias/delete", {
         media: media.toJSON(),
@@ -93,7 +82,7 @@ router.get("/:media_id/delete", async (req, res) => {
 
 router.post("/:media_id/delete", async (req, res) => {
     // fetch the media that we want to delete
-    let media = await fetchMedia(req.params.media_id);
+    let media = await dataLayer.fetchMedia(req.params.media_id);
     await media.destroy();
     res.redirect("/medias");
 });

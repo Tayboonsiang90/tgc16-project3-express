@@ -8,15 +8,7 @@ const { checkIfAuthenticated } = require("../middlewares");
 
 const { Country } = require("../models");
 
-async function fetchCountry(countryId) {
-    const country = await Country.where({
-        id: countryId,
-    }).fetch({
-        require: true,
-    });
-
-    return country;
-}
+const dataLayer = require("../dal/countries");
 
 router.get("/", checkIfAuthenticated, async (req, res) => {
     let countries = await Country.collection().fetch();
@@ -32,10 +24,8 @@ router.post("/", async (req, res) => {
     createCountryHTML.handle(req, {
         success: async (form) => {
             const country = new Country();
-            console.log(form.data.name);
             country.set("name", form.data.name);
             await country.save();
-            console.log("Added to database");
             res.redirect("/countries");
         },
         error: async (form) => {
@@ -48,7 +38,7 @@ router.post("/", async (req, res) => {
 
 router.get("/:country_id/update", async (req, res) => {
     // retrieve the country
-    let country = await fetchCountry(req.params.country_id);
+    let country = await dataLayer.fetchCountry(req.params.country_id);
 
     const editCountryHTML = createCountryForm();
 
@@ -63,7 +53,7 @@ router.get("/:country_id/update", async (req, res) => {
 
 router.post("/:country_id/update", async (req, res) => {
     // retrieve the country
-    let country = await fetchCountry(req.params.country_id);
+    let country = await dataLayer.fetchCountry(req.params.country_id);
 
     // process the form
     const editCountryHTML = createCountryForm();
@@ -84,7 +74,7 @@ router.post("/:country_id/update", async (req, res) => {
 
 router.get("/:country_id/delete", async (req, res) => {
     // fetch the country that we want to delete
-    let country = await fetchCountry(req.params.country_id);
+    let country = await dataLayer.fetchCountry(req.params.country_id);
 
     res.render("countries/delete", {
         country: country.toJSON(),
@@ -93,7 +83,7 @@ router.get("/:country_id/delete", async (req, res) => {
 
 router.post("/:country_id/delete", async (req, res) => {
     // fetch the country that we want to delete
-    let country = await fetchCountry(req.params.country_id);
+    let country = await dataLayer.fetchCountry(req.params.country_id);
     await country.destroy();
     res.redirect("/countries");
 });

@@ -61,6 +61,7 @@ const vaultRoutes = require("./routes/vaults");
 const adminRoutes = require("./routes/admin");
 const artRoutes = require("./routes/arts");
 const artistRoutes = require("./routes/artists");
+const cloudinaryRoutes = require("./routes/cloudinary.js");
 
 // enable CSRF
 app.use(csrf());
@@ -87,6 +88,7 @@ async function main() {
     app.use("/vaults", vaultRoutes);
     app.use("/arts", artRoutes);
     app.use("/artists", artistRoutes);
+    app.use("/cloudinary", cloudinaryRoutes);
 }
 
 main();
