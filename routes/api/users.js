@@ -7,8 +7,8 @@ const { checkIfAuthenticatedJWT } = require("../../middlewares");
 const generateAccessToken = (user, secret, expiresIn) => {
     return jwt.sign(
         {
-            id: user.get("id"),
-            email: user.get("email"),
+            id: user.id,
+            email: user.email,
         },
         secret,
         {
@@ -23,7 +23,24 @@ const getHashedPassword = (password) => {
     return hash;
 };
 
-const { User } = require("../../models");
+const { User, BlacklistedToken } = require("../../models");
+
+//Create Account
+router.post("/register", async (req, res) => {
+    const user = new User({
+        email: req.body.email,
+        password: getHashedPassword(req.body.password),
+        country_id: req.body.country_id,
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        contact_number: req.body.contact_number,
+        date_created: new Date(),
+    });
+    await user.save();
+    res.send({
+        message: "Successfully registered",
+    });
+});
 
 router.get("/profile", checkIfAuthenticatedJWT, async (req, res) => {
     const user = req.user;
@@ -40,7 +57,6 @@ router.post("/login", async (req, res) => {
     // if user exists and the password is equals
     if (user && user.get("password") == getHashedPassword(req.body.password)) {
         const userObject = {
-            username: user.get("user"),
             email: user.get("email"),
             id: user.get("id"),
         };
@@ -91,6 +107,7 @@ router.post("/refresh", async (req, res) => {
 
 router.post("/logout", async (req, res) => {
     let refreshToken = req.body.refreshToken;
+    console.log(refreshToken)
     if (!refreshToken) {
         res.sendStatus(401);
     } else {

@@ -22,7 +22,7 @@ exports.up = function (db) {
         first_name: { type: "string", length: 100 },
         last_name: { type: "string", length: 100 },
         contact_number: { type: "bigint" },
-        date_created: { type: "datetime", notNull: true },
+        date_created: { type: "timestamp", notNull: true },
     });
 };
 
