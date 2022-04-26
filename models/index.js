@@ -65,6 +65,12 @@ const Art = bookshelf.model("Art", {
     medias() {
         return this.belongsToMany("Media");
     },
+    users() {
+        return this.belongsToMany("User").withPivot(["share"]);
+    },
+    fixedPriceListings() {
+        return this.hasMany("FixedPriceListing");
+    },
 });
 
 const User = bookshelf.model("User", {
@@ -72,10 +78,26 @@ const User = bookshelf.model("User", {
     country() {
         return this.belongsTo("Country");
     },
+    arts() {
+        return this.belongsToMany("Art").withPivot(["share"]);
+    },
+    fixedPriceListings() {
+        return this.hasMany("FixedPriceListing");
+    },
 });
 
 const BlacklistedToken = bookshelf.model("BlacklistedToken", {
     tableName: "blacklisted_tokens",
 });
 
-module.exports = { BlacklistedToken, Admin, Country, Media, Tag, Vault, Art, Artist, User };
+const FixedPriceListing = bookshelf.model("FixedPriceListing", {
+    tableName: "fixed_price_listings",
+    user() {
+        return this.belongsTo("User");
+    },
+    art() {
+        return this.belongsTo("Art");
+    },
+});
+
+module.exports = { BlacklistedToken, Admin, Country, Media, Tag, Vault, Art, Artist, User, FixedPriceListing };
