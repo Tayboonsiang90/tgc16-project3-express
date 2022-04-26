@@ -73,6 +73,7 @@ const api = {
     vaults: require("./routes/api/vaults"),
     arts: require("./routes/api/arts"),
     users: require("./routes/api/users"),
+    listings: require("./routes/api/listings"),
 };
 
 // enable CSRF
@@ -118,6 +119,7 @@ async function main() {
     app.use("/api/vaults", express.json(), api.vaults);
     app.use("/api/arts", express.json(), api.arts);
     app.use("/api/users", express.json(), api.users);
+    app.use("/api/listings", express.json(), api.listings);
 }
 
 main();
