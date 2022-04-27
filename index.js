@@ -65,6 +65,7 @@ const adminRoutes = require("./routes/admin");
 const artRoutes = require("./routes/arts");
 const artistRoutes = require("./routes/artists");
 const cloudinaryRoutes = require("./routes/cloudinary.js");
+const { checkIfAuthenticated } = require("./middlewares");
 const api = {
     countries: require("./routes/api/countries"),
     artists: require("./routes/api/artists"),
