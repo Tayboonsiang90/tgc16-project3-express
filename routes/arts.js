@@ -157,4 +157,16 @@ router.post("/:art_id/delete", async (req, res) => {
     res.redirect("/arts");
 });
 
+router.get("/:art_id/owners", async (req, res) => {
+    let arts = await Art.where({
+        id: req.params.art_id,
+    }).fetch({
+        withRelated: ["artist", "users"],
+    });
+
+    res.render("arts/owners", {
+        arts: arts.toJSON(),
+    });
+});
+
 module.exports = router;

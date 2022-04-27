@@ -17,6 +17,7 @@
                     <th>Medias</th>
                     <th>Tags</th>
                     <th>Image</th>
+                    <th>Owners</th>
                     <th>Update</th>
                     <th>Delete</th>
                 </tr>
@@ -56,6 +57,9 @@
                         </td>
                         <td>
                             <img class="img-thumbnail" src="{{this.image_url}}" />
+                        </td>
+                        <td>
+                            <a href="/arts/{{this.id}}/owners" class="btn btn-info">Owners</a>
                         </td>
                         <td>
                             <a href="/arts/{{this.id}}/update" class="btn btn-success">Update</a>

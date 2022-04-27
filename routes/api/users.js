@@ -29,6 +29,7 @@ const { User, BlacklistedToken } = require("../../models");
 router.post("/register", async (req, res) => {
     const user = new User({
         email: req.body.email,
+        username: req.body.username,
         password: getHashedPassword(req.body.password),
         country_id: req.body.country_id,
         first_name: req.body.first_name,
@@ -44,7 +45,15 @@ router.post("/register", async (req, res) => {
 
 router.get("/profile", checkIfAuthenticatedJWT, async (req, res) => {
     const user = req.user;
-    res.send(user);
+    console.log(user.id);
+    let arts = await User.where({
+        id: user.id,
+    }).fetch({
+        withRelated: ["arts"],
+    });
+    returnObject = arts.toJSON();
+    delete returnObject.password;
+    res.send(returnObject);
 });
 
 router.post("/login", async (req, res) => {
@@ -107,7 +116,7 @@ router.post("/refresh", async (req, res) => {
 
 router.post("/logout", async (req, res) => {
     let refreshToken = req.body.refreshToken;
-    console.log(refreshToken)
+    console.log(refreshToken);
     if (!refreshToken) {
         res.sendStatus(401);
     } else {
