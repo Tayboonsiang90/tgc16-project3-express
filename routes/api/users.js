@@ -69,7 +69,8 @@ router.post("/login", async (req, res) => {
             email: user.get("email"),
             id: user.get("id"),
         };
-        let accessToken = generateAccessToken(userObject, process.env.TOKEN_SECRET, "15m");
+        //console.log(remember to change this)
+        let accessToken = generateAccessToken(userObject, process.env.TOKEN_SECRET, "1d");
         let refreshToken = generateAccessToken(userObject, process.env.REFRESH_TOKEN_SECRET, "7d");
         res.send({
             //return the access token

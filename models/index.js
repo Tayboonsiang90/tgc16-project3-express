@@ -66,7 +66,7 @@ const Art = bookshelf.model("Art", {
         return this.belongsToMany("Media");
     },
     users() {
-        return this.belongsToMany("User").withPivot(["share"]);
+        return this.belongsToMany("User").withPivot(["total_share", "share_in_order"]);
     },
     fixedPriceListings() {
         return this.hasMany("FixedPriceListing");
@@ -79,7 +79,7 @@ const User = bookshelf.model("User", {
         return this.belongsTo("Country");
     },
     arts() {
-        return this.belongsToMany("Art").withPivot(["share"]);
+        return this.belongsToMany("Art").withPivot(["total_share", "share_in_order"]);
     },
     fixedPriceListings() {
         return this.hasMany("FixedPriceListing");
