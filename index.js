@@ -65,7 +65,7 @@ const adminRoutes = require("./routes/admin");
 const artRoutes = require("./routes/arts");
 const artistRoutes = require("./routes/artists");
 const cloudinaryRoutes = require("./routes/cloudinary.js");
-const { checkIfAuthenticated } = require("./middlewares");
+
 const api = {
     countries: require("./routes/api/countries"),
     artists: require("./routes/api/artists"),
@@ -75,6 +75,8 @@ const api = {
     arts: require("./routes/api/arts"),
     users: require("./routes/api/users"),
     listings: require("./routes/api/listings"),
+    cart: require("./routes/api/cart"),
+    checkout: require("./routes/api/checkout"),
 };
 
 // enable CSRF
@@ -121,6 +123,8 @@ async function main() {
     app.use("/api/arts", express.json(), api.arts);
     app.use("/api/users", express.json(), api.users);
     app.use("/api/listings", express.json(), api.listings);
+    app.use("/api/cart", express.json(), api.cart);
+    app.use("/api/checkout", express.json(), api.checkout);
 }
 
 main();

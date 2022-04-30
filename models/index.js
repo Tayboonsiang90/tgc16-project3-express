@@ -98,6 +98,16 @@ const FixedPriceListing = bookshelf.model("FixedPriceListing", {
     art() {
         return this.belongsTo("Art");
     },
+    cartItems() {
+        return this.hasMany("CartItem");
+    },
 });
 
-module.exports = { BlacklistedToken, Admin, Country, Media, Tag, Vault, Art, Artist, User, FixedPriceListing };
+const CartItem = bookshelf.model("CartItem", {
+    tableName: "cart_items",
+    fixedPriceListing() {
+        return this.belongsTo("FixedPriceListing");
+    },
+});
+
+module.exports = { BlacklistedToken, Admin, Country, Media, Tag, Vault, Art, Artist, User, FixedPriceListing, CartItem };

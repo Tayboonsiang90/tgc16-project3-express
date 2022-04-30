@@ -23,7 +23,7 @@ router.get("/fixed_price_listings", async (req, res) => {
 });
 
 router.get("/fixed_price_listings/:listing_id", async (req, res) => {
-    res.send(await listingDataLayer.getAllFixedPriceListing());
+    res.send(await listingDataLayer.fetchFixedPriceListing(req.params.listing_id));
 });
 
 // Body input is art_id, price, share
