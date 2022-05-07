@@ -78,7 +78,7 @@ const api = {
     cart: require("./routes/api/cart"),
     checkout: require("./routes/api/checkout"),
 };
-
+//1
 // enable CSRF
 const csurfInstance = csrf();
 app.use(function (req, res, next) {
