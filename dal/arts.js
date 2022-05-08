@@ -32,7 +32,7 @@ async function fetchArt(artId) {
 }
 
 const getAllArts = async () => {
-    return await Art.fetchAll();
+    return await Art.collection().fetch({ withRelated: ["artist", "vault", "tags", "medias"] });
 };
 
 module.exports = {
