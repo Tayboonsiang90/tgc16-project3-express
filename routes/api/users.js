@@ -74,7 +74,6 @@ router.post("/register", async (req, res) => {
 
 router.get("/profile", checkIfAuthenticatedJWT, async (req, res) => {
     const user = req.user;
-    console.log(user.id);
     let arts = await User.where({
         id: user.id,
     }).fetch({
@@ -153,7 +152,6 @@ router.post("/refresh", async (req, res) => {
 
 router.post("/logout", async (req, res) => {
     let refreshToken = req.body.refreshToken;
-    console.log(refreshToken);
     if (!refreshToken) {
         res.sendStatus(401);
     } else {
