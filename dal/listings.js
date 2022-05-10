@@ -27,8 +27,26 @@ async function fetchFixedPriceListing(fetchFixedPriceListingId) {
     return fixedPriceListing;
 }
 
+async function fetchFixedPriceListingByArtId(artId) {
+    console.log(artId)
+    const fixedPriceListing = await FixedPriceListing.where({
+        art_id: artId,
+    }).fetchAll({
+        require: false,
+        withRelated: ["user"],
+    });
+
+    return fixedPriceListing;
+}
+
 async function fetchBalancesForUserArt(userId, artId) {
     let balances = await knex.select().from("arts_users").where("user_id", userId).where("art_id", artId);
+
+    return balances[0].total_share - balances[0].share_in_order;
+}
+
+async function fetchBalancesForUserArt(artId) {
+    let balances = await knex.select().from("arts_users").where("art_id", artId);
 
     return balances[0].total_share - balances[0].share_in_order;
 }
@@ -37,4 +55,5 @@ module.exports = {
     getAllFixedPriceListing,
     fetchFixedPriceListing,
     fetchBalancesForUserArt,
+    fetchFixedPriceListingByArtId,
 };

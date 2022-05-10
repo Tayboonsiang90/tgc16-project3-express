@@ -26,6 +26,14 @@ router.get("/fixed_price_listings/:listing_id", async (req, res) => {
     res.send(await listingDataLayer.fetchFixedPriceListing(req.params.listing_id));
 });
 
+router.get("/fixed_price_listings/art/:art_id", async (req, res) => {
+    if (req.params.art_id == "undefined") {
+        res.send("");
+    } else {
+        res.send(await listingDataLayer.fetchFixedPriceListingByArtId(req.params.art_id));
+    }
+});
+
 // Body input is art_id, price, share
 router.post("/fixed_price_listings", checkIfAuthenticatedJWT, async (req, res) => {
     try {
