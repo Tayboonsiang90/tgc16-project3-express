@@ -3,7 +3,7 @@ const router = express.Router();
 const { checkIfAuthenticatedJWT } = require("../../middlewares");
 
 const CartServices = require("../../services/cart_services");
-const Stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const artDataLayer = require("../../dal/arts");
 
@@ -56,8 +56,7 @@ router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
     };
 
     // step 3: register the session
-    let stripeSession = await Stripe.checkout.sessions.create(payment);
-    console.log(Stripe(process.env.STRIPE_PUBLISHABLE_KEY));
+    let stripeSession = await stripe.checkout.sessions.create(payment);
     res.send({
         sessionId: stripeSession.id, // 4. Get the ID of the session
         publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
