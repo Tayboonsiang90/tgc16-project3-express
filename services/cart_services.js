@@ -1,4 +1,5 @@
 const cartDataLayer = require("../dal/cart_items");
+const listingDataLayer = require("../dal/listings");
 
 class CartServices {
     constructor(user_id) {
@@ -7,11 +8,16 @@ class CartServices {
     async addToCart(listingId, quantity) {
         // check if the user has added the product to the shopping cart before
         let cartItem = await cartDataLayer.getCartItemByUserAndListing(this.user_id, listingId);
+        let listing = await listingDataLayer.fetchFixedPriceListing(listingId);
         if (cartItem) {
-            return await cartDataLayer.updateQuantity(this.user_id, listingId, cartItem.get("quantity") + 1);
+            if (cartItem.get("quantity") + quantity > listing.get("share")) {
+                return "FAILED: You attempted to add more quantity than what is available...";
+            }
+            await cartDataLayer.updateQuantity(this.user_id, listingId, cartItem.get("quantity") + quantity);
+            return "SUCCESS: Your order have been added to the cart.";
         } else {
-            let newCartItem = cartDataLayer.createCartItem(this.user_id, listingId, quantity);
-            return newCartItem;
+            await cartDataLayer.createCartItem(this.user_id, listingId, quantity);
+            return "SUCCESS: Your order have been added to the cart.";
         }
     }
 

@@ -12,12 +12,14 @@ const getCart = async (userId) => {
 };
 
 const getCartItemByUserAndListing = async (userId, listingId) => {
-    return await CartItem.where({
+    let cartItem = await CartItem.where({
         user_id: userId,
         fixed_price_listing_id: listingId,
     }).fetch({
         require: false,
     });
+
+    return cartItem;
 };
 
 async function createCartItem(userId, listingId, quantity) {
@@ -32,21 +34,14 @@ async function createCartItem(userId, listingId, quantity) {
 
 async function removeFromCart(userId, listingId) {
     let cartItem = await getCartItemByUserAndListing(userId, listingId);
-    if (cartItem) {
-        await cartItem.destroy();
-        return true;
-    }
-    return false;
+
+    await cartItem.destroy();
 }
 
 async function updateQuantity(userId, listingId, newQuantity) {
     let cartItem = await getCartItemByUserAndListing(userId, listingId);
-    if (cartItem) {
-        cartItem.set("quantity", newQuantity);
-        cartItem.save();
-        return true;
-    }
-    return false;
+    cartItem.set("quantity", newQuantity);
+    cartItem.save();
 }
 
 module.exports = { getCart, getCartItemByUserAndListing, createCartItem, removeFromCart, updateQuantity };

@@ -28,7 +28,6 @@ async function fetchFixedPriceListing(fetchFixedPriceListingId) {
 }
 
 async function fetchFixedPriceListingByArtId(artId) {
-    console.log(artId)
     const fixedPriceListing = await FixedPriceListing.where({
         art_id: artId,
     }).fetchAll({

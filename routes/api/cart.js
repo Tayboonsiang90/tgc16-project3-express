@@ -14,11 +14,14 @@ router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
 //need a parameter quantity in the body
 router.post("/:listing_id", checkIfAuthenticatedJWT, async (req, res) => {
     try {
+        if (req.body.quantity == 0) {
+            throw "You provided a invalid 0 value."
+        }
         let cart = new CartServices(req.user.id);
-        await cart.addToCart(req.params.listing_id, req.body.quantity);
+        let status = await cart.addToCart(req.params.listing_id, req.body.quantity);
 
         res.send({
-            message: "Your order have been added to the cart.",
+            message: status,
         });
     } catch (e) {
         res.status(500);
@@ -48,7 +51,7 @@ router.put("/:listing_id", checkIfAuthenticatedJWT, async (req, res) => {
 router.delete("/:listing_id", checkIfAuthenticatedJWT, async (req, res) => {
     try {
         let cart = new CartServices(req.user.id);
-        await cart.remove(req.params.product_id);
+        await cart.remove(req.params.listing_id);
         res.send({
             message: "Your cart order has been deleted.",
         });

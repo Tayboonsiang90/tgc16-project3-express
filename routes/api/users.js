@@ -101,7 +101,7 @@ router.post("/login", async (req, res) => {
                 email: user.get("email"),
                 id: user.get("id"),
             };
-            let accessToken = generateAccessToken(userObject, process.env.TOKEN_SECRET, "15m");
+            let accessToken = generateAccessToken(userObject, process.env.TOKEN_SECRET, "6h");
             let refreshToken = generateAccessToken(userObject, process.env.REFRESH_TOKEN_SECRET, "7d");
             res.status(200);
             res.send({
