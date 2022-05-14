@@ -26,14 +26,14 @@ router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
 
         const lineItem = {
             name: referencedArt.get("name"),
-            amount: Number(item.related("fixedPriceListing").get("price"))*100,
+            amount: Number(item.related("fixedPriceListing").get("price")) * 100,
             quantity: item.get("quantity"),
             currency: "SGD",
         };
         if (referencedArt.get("image_url")) {
             lineItem["images"] = [referencedArt.get("image_url")];
         }
-        console.log(lineItem)
+        console.log(lineItem);
         lineItems.push(lineItem);
         // save the quantity data along with the product id
         meta.push({
@@ -64,25 +64,32 @@ router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
     });
 });
 
-router.post("/process_payment", bodyParser.raw({ type: "application/json" }), async (req, res) => {
-    let payload = req.body;
-    let endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
-    let sigHeader = req.headers["stripe-signature"];
-    let event;
-    try {
-        event = stripe.webhooks.constructEvent(payload, sigHeader, endpointSecret);
-    } catch (e) {
-        res.send({
-            error: e.message,
-        });
-        console.log(e.message);
+router.post(
+    "/process_payment",
+    express.raw({
+        type: "application/json",
+    }),
+    async (req, res) => {
+        console.log("A PROCESS PAYMENT REQUEST HAVE BEEN RECIEVED");
+        let payload = req.body;
+        let endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
+        let sigHeader = req.headers["stripe-signature"];
+        let event;
+        try {
+            event = stripe.webhooks.constructEvent(payload, sigHeader, endpointSecret);
+        } catch (e) {
+            res.send({
+                error: e.message,
+            });
+            console.log(e.message);
+        }
+        if (event.type == "checkout.session.completed") {
+            let stripeSession = event.data.object;
+            console.log(stripeSession);
+            // process stripeSession
+        }
+        res.send({ received: true });
     }
-    if (event.type == "checkout.session.completed") {
-        let stripeSession = event.data.object;
-        console.log(stripeSession);
-        // process stripeSession
-    }
-    res.send({ received: true });
-});
+);
 
 module.exports = router;
