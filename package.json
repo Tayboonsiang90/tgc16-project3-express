@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Tayboonsiang90/tgc16-project3-express#readme",
   "dependencies": {
+    "body-parser": "^1.20.0",
     "bookshelf": "^1.2.0",
     "cloudinary": "^1.29.1",
     "connect-flash": "^0.1.1",

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { checkIfAuthenticatedJWT } = require("../../middlewares");
+const bodyParser = require("body-parser");
 
 const CartServices = require("../../services/cart_services");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -61,6 +62,27 @@ router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
         sessionId: stripeSession.id, // 4. Get the ID of the session
         publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
     });
+});
+
+router.post("/process_payment", bodyParser.raw({ type: "application/json" }), async (req, res) => {
+    let payload = req.body;
+    let endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
+    let sigHeader = req.headers["stripe-signature"];
+    let event;
+    try {
+        event = stripe.webhooks.constructEvent(payload, sigHeader, endpointSecret);
+    } catch (e) {
+        res.send({
+            error: e.message,
+        });
+        console.log(e.message);
+    }
+    if (event.type == "checkout.session.completed") {
+        let stripeSession = event.data.object;
+        console.log(stripeSession);
+        // process stripeSession
+    }
+    res.send({ received: true });
 });
 
 module.exports = router;
