@@ -7,6 +7,8 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const artDataLayer = require("../../dal/arts");
 
+let app = express();
+
 app.use((req, res, next) => {
     console.log("originalURL", req.originalUrl);
     if (req.originalUrl === "/process_payment") {
