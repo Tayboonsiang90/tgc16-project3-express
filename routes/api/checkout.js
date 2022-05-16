@@ -70,7 +70,7 @@ router.post(
     function (req, res) {
         let payload = req.body;
         console.log(typeof payload);
-        let endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
+        let endpointSecret = JSON.stringify(process.env.STRIPE_ENDPOINT_SECRET);
         console.log(typeof endpointSecret);
         let sigHeader = req.headers["stripe-signature"];
         console.log(typeof sigHeader);
