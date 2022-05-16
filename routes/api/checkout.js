@@ -69,6 +69,7 @@ router.post("/process_payment", bodyParser.raw({ type: "*/*" }), function (req, 
     let event;
     try {
         console.log("Trying to construct event for stripe webhooks...")
+        console.log(stripe.webhooks.constructEvent);
         event = stripe.webhooks.constructEvent(payload, sigHeader, endpointSecret);
         console.log(event)
     } catch (e) {
