@@ -77,6 +77,7 @@ router.post(
         let event;
         try {
             event = stripe.webhooks.constructEvent(payload, sigHeader, endpointSecret);
+            console.log(event)
         } catch (e) {
             res.send({
                 error: e.message,
