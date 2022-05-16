@@ -21,9 +21,6 @@ router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
         artId = item.related("fixedPriceListing").get("art_id");
         referencedArt = await artDataLayer.fetchArt(artId);
 
-        console.log(referencedArt.get("name"), item.related("fixedPriceListing").get("price"), item.get("quantity"));
-        console.log(referencedArt.get("image_url"));
-
         const lineItem = {
             name: referencedArt.get("name"),
             amount: Number(item.related("fixedPriceListing").get("price")) * 100,
@@ -33,7 +30,7 @@ router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
         if (referencedArt.get("image_url")) {
             lineItem["images"] = [referencedArt.get("image_url")];
         }
-        console.log(lineItem);
+
         lineItems.push(lineItem);
         // save the quantity data along with the product id
         meta.push({
@@ -44,8 +41,6 @@ router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
 
     // step 2 - create stripe payment
     let metaData = JSON.stringify(meta);
-    console.log(process.env.STRIPE_ERROR_URL);
-    console.log(process.env.STRIPE_SUCCESS_URL + `?sessionId={CHECKOUT_SESSION_ID}`);
     const payment = {
         payment_method_types: ["card"],
         line_items: lineItems,
@@ -76,8 +71,9 @@ router.post(
         let sigHeader = req.headers["stripe-signature"];
         let event;
         try {
+            console.log("payload:", payload, "sigheader:", sigHeader, "endpointSecret:", endpointSecret);
             event = stripe.webhooks.constructEvent(payload, sigHeader, endpointSecret);
-            console.log(event)
+            console.log("event", event);
         } catch (e) {
             res.send({
                 error: e.message,
