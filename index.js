@@ -38,7 +38,7 @@ app.use(cors());
 app.use(
     session({
         store: new FileStore({ path: "./sessions/" }),
-        secret: "process.env.SESSION_SECRET_KEY",
+        secret: process.env.SESSION_SECRET_KEY,
         resave: false,
         saveUninitialized: true,
     })
@@ -83,16 +83,20 @@ const api = {
     cart: require("./routes/api/cart"),
     checkout: require("./routes/api/checkout"),
 };
+
 //1
 // enable CSRF
 const csurfInstance = csrf();
 app.use(function (req, res, next) {
-    // exclude whatever url we want from CSRF protection
+    // if it is webhook url, then call next() immediately
+    // or if the url is for the api, then also exclude from csrf
     if (req.url === "/checkout/process_payment" || req.url.slice(0, 5) == "/api/") {
-        return next();
+        next();
+    } else {
+        csurfInstance(req, res, next);
     }
-    csurfInstance(req, res, next);
 });
+
 // Share CSRF with hbs files
 app.use(function (req, res, next) {
     if (req.csrfToken) {

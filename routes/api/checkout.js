@@ -62,29 +62,36 @@ router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
 // this is the webhook route
 // stripe will send a POST request to this route when a
 // payment is completed
-router.post('/process_payment', express.raw({
-    'type':'application/json'
-}), function(req,res){
-    let payload = req.body;
-    let endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
-    let sigHeader = req.headers["stripe-signature"];
-    let event;
-    try {
-        event = stripe.webhooks.constructEvent(payload, sigHeader, endpointSecret);
-        console.log(event)
-    } catch(e) {
-        res.send({
-            "error": e.message
-        })
-    }
+router.post(
+    "/process_payment",
+    express.raw({
+        type: "application/json",
+    }),
+    function (req, res) {
+        let payload = req.body;
+        console.log(typeof payload);
+        let endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
+        console.log(typeof endpointSecret);
+        let sigHeader = req.headers["stripe-signature"];
+        console.log(typeof sigHeader);
+        let event;
+        try {
+            event = stripe.webhooks.constructEvent(payload, sigHeader, endpointSecret);
+            console.log(event);
+        } catch (e) {
+            res.send({
+                error: e.message,
+            });
+        }
 
-    if (event.type === 'checkout.session.completed') {
-        let stripeSession = event.data.object;
-        console.log(stripeSession)
+        if (event.type === "checkout.session.completed") {
+            let stripeSession = event.data.object;
+            console.log(stripeSession);
+        }
+        res.send({
+            recieved: true,
+        });
     }
-    res.send({
-        'recieved': true
-    })
-})
+);
 
 module.exports = router;
