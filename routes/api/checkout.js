@@ -62,16 +62,16 @@ router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
 // this is the webhook route
 // stripe will send a POST request to this route when a
 // payment is completed
-router.post("/process_payment", bodyParser.raw({ type: "*/*" }), function (req, res) {
+router.post("/process_payment", bodyParser.raw({ type: "application/json" }), function (req, res) {
     let payload = req.body;
     let endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
     let sigHeader = req.headers["stripe-signature"];
     let event;
     try {
-        console.log("Trying to construct event for stripe webhooks...")
+        console.log("Trying to construct event for stripe webhooks...");
         console.log(stripe.webhooks.constructEvent);
         event = stripe.webhooks.constructEvent(payload, sigHeader, endpointSecret);
-        console.log(event)
+        console.log(event);
     } catch (e) {
         res.send({
             error: e.message,
