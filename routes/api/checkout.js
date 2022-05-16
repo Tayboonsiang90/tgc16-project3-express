@@ -1,12 +1,20 @@
 const express = require("express");
 const router = express.Router();
 const { checkIfAuthenticatedJWT } = require("../../middlewares");
-const bodyParser = require("body-parser");
 
 const CartServices = require("../../services/cart_services");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const artDataLayer = require("../../dal/arts");
+
+app.use((req, res, next) => {
+    console.log("originalURL", req.originalUrl);
+    if (req.originalUrl === "/process_payment") {
+        next();
+    } else {
+        express.json()(req, res, next);
+    }
+});
 
 router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
     const cart = new CartServices(req.user.id);
@@ -62,7 +70,7 @@ router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
 // this is the webhook route
 // stripe will send a POST request to this route when a
 // payment is completed
-router.post("/process_payment", bodyParser.raw({ type: "application/json" }), (req, res) => {
+router.post("/process_payment", express.raw({ type: "application/json" }), (req, res) => {
     let event;
 
     // Verify the event came from Stripe
@@ -76,7 +84,7 @@ router.post("/process_payment", bodyParser.raw({ type: "application/json" }), (r
     }
 
     // Successfully constructed event
-    console.log(event)
+    console.log(event);
 
     res.json({ received: true });
 });
