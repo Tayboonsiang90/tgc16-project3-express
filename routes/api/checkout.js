@@ -70,14 +70,18 @@ router.post(
     function (req, res) {
         let payload = req.body;
         console.log(typeof payload);
-        let endpointSecret = JSON.stringify(process.env.STRIPE_ENDPOINT_SECRET);
+        let endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
         console.log(typeof endpointSecret);
         let sigHeader = req.headers["stripe-signature"];
-        console.log(typeof sigHeader);
+        sigHeader = sigHeader.replace(",", '","');
+        sigHeader = sigHeader.replace("t=", '"t":"');
+        sigHeader = sigHeader.replace("v1=", 'v1":"');
+        sigHeader = sigHeader.replace(",v0=", '","v0":"');
+        console.log(typeof JSON.parse("{" + sigHeader + '"}'));
         let event;
         try {
-            console.log(1, payload, 2, sigHeader, 3, endpointSecret);
-            event = stripe.webhooks.constructEvent(payload, sigHeader, endpointSecret);
+            console.log(1, payload, 2, JSON.parse("{" + sigHeader + '"}'), 3, endpointSecret);
+            event = stripe.webhooks.constructEvent(payload, JSON.parse("{" + sigHeader + '"}'), endpointSecret);
             console.log(event);
         } catch (e) {
             res.send({
