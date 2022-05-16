@@ -76,6 +76,7 @@ router.post(
         console.log(typeof sigHeader);
         let event;
         try {
+            console.log(1, payload, 2, sigHeader, 3, endpointSecret);
             event = stripe.webhooks.constructEvent(payload, sigHeader, endpointSecret);
             console.log(event);
         } catch (e) {
