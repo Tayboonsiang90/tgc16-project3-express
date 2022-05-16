@@ -68,7 +68,7 @@ router.post("/process_payment", bodyParser.raw({ type: "application/json" }), (r
     // Verify the event came from Stripe
     try {
         const sig = req.headers["stripe-signature"];
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_ENDPOINT_SECRET);
     } catch (err) {
         // On error, log and return the error message
         console.log(`❌ Error message: ${err.message}`);
