@@ -62,41 +62,29 @@ router.get("/", checkIfAuthenticatedJWT, async (req, res) => {
 // this is the webhook route
 // stripe will send a POST request to this route when a
 // payment is completed
-router.post(
-    "/process_payment",
-    express.raw({
-        type: "application/json",
-    }),
-    function (req, res) {
-        let payload = req.body;
-        console.log(typeof payload);
-        let endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
-        console.log(typeof endpointSecret);
-        let sigHeader = req.headers["stripe-signature"];
-        sigHeader = sigHeader.replace(",", '","');
-        sigHeader = sigHeader.replace("t=", '"t":"');
-        sigHeader = sigHeader.replace("v1=", 'v1":"');
-        sigHeader = sigHeader.replace(",v0=", '","v0":"');
-        console.log(typeof JSON.parse("{" + sigHeader + '"}'));
-        let event;
-        try {
-            console.log(1, payload, 2, JSON.parse("{" + sigHeader + '"}'), 3, endpointSecret);
-            event = stripe.webhooks.constructEvent(payload, JSON.parse("{" + sigHeader + '"}'), endpointSecret);
-            console.log(event);
-        } catch (e) {
-            res.send({
-                error: e.message,
-            });
-        }
-
-        if (event.type === "checkout.session.completed") {
-            let stripeSession = event.data.object;
-            console.log(stripeSession);
-        }
+router.post("/process_payment", bodyParser.raw({ type: "*/*" }), function (req, res) {
+    let payload = req.body;
+    let endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
+    let sigHeader = req.headers["stripe-signature"];
+    let event;
+    try {
+        console.log("Trying to construct event for stripe webhooks...")
+        event = stripe.webhooks.constructEvent(payload, sigHeader, endpointSecret);
+        console.log(event)
+    } catch (e) {
         res.send({
-            recieved: true,
+            error: e.message,
         });
     }
-);
+
+    if (event.type === "checkout.session.completed") {
+        console.log("HIHIHIHIHIHIHIHIHIHIHKWKWKWKWKWKWK", event);
+        let stripeSession = event.data.object;
+        console.log(stripeSession);
+    }
+    res.send({
+        recieved: true,
+    });
+});
 
 module.exports = router;
