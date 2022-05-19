@@ -134,6 +134,7 @@ router.post(
                             await knex("arts_users").where("user_id", listingData.user_id).where("art_id", art_id).decrement("share_in_order", quantity);
                             //increment buyers balances
                             console.log("where user_id", user_id, "where art_id", art_id, "increment", quantity);
+                            console.log(await knex("arts_users").where("user_id", user_id).where("art_id", art_id));
                             await knex("arts_users").where("user_id", user_id).where("art_id", art_id).increment("total_share", quantity);
                         } else if (listingData.share == quantity) {
                             console.log("listing == ordered");
