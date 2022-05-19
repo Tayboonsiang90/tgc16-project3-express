@@ -122,7 +122,10 @@ router.post(
                     listingData = listing.toJSON();
                     console.log("Listing Data", listingData);
 
+                    console.log(listingData.user_id != user_id);
+
                     if (listingData.user_id != user_id) {
+                        console.log("Checking", listingData.share, quantity);
                         if (listingData.share > quantity) {
                             console.log("listing > ordered");
                             await listing.set("share", listingData.share - quantity);
