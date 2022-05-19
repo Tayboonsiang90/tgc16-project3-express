@@ -238,4 +238,26 @@ const createArtForm = (vaults, artists, tags, medias) => {
     });
 };
 
-module.exports = { bootstrapField, createLoginForm, createCountryForm, createMediaForm, createTagForm, createVaultForm, createArtistForm, createArtForm };
+const createOwnerForm = (allUsers) => {
+    return forms.create({
+        user_id: fields.string({
+            label: "User",
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+            widget: widgets.select(),
+            choices: allUsers,
+        }),
+        total_share: fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ["form-label"],
+            },
+        }),
+    });
+};
+
+module.exports = { bootstrapField, createOwnerForm, createLoginForm, createCountryForm, createMediaForm, createTagForm, createVaultForm, createArtistForm, createArtForm };

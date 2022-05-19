@@ -32,6 +32,10 @@ class CartServices {
     async getCart() {
         return await cartDataLayer.getCart(this.user_id);
     }
+
+    async deleteCart() {
+        return await cartDataLayer.deleteCart(this.user_id);
+    }
 }
 
 module.exports = CartServices;

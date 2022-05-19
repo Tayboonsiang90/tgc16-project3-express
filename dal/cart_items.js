@@ -44,4 +44,16 @@ async function updateQuantity(userId, listingId, newQuantity) {
     cartItem.save();
 }
 
-module.exports = { getCart, getCartItemByUserAndListing, createCartItem, removeFromCart, updateQuantity };
+async function deleteCart(userId) {
+    let cartitem1 = await CartItem.collection()
+        .where({
+            user_id: userId,
+        })
+        .fetch({
+            require: false,
+        });
+        
+    await cartitem1.destroy();
+}
+
+module.exports = { getCart, getCartItemByUserAndListing, createCartItem, removeFromCart, updateQuantity, deleteCart };

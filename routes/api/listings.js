@@ -18,8 +18,15 @@ const listingDataLayer = require("../../dal/listings");
 
 const { FixedPriceListing } = require("../../models");
 
-router.get("/fixed_price_listings", async (req, res) => {
-    res.send(await listingDataLayer.getAllFixedPriceListing());
+router.get("/fixed_price_listings", checkIfAuthenticatedJWT, async (req, res) => {
+    try {
+        res.send(await listingDataLayer.getAllFixedPriceListing(req.user.id));
+    } catch (e) {
+        res.status(500);
+        res.send({
+            message: e,
+        });
+    }
 });
 
 router.get("/fixed_price_listings/:listing_id", async (req, res) => {
@@ -37,13 +44,17 @@ router.get("/fixed_price_listings/art/:art_id", async (req, res) => {
 // Body input is art_id, price, share
 router.post("/fixed_price_listings", checkIfAuthenticatedJWT, async (req, res) => {
     try {
+        console.log(req.body);
         //for a fixed price listing, we need
         //the user_id, the art_id, the price and the share to be sold
         //Information from JWT
         const user = req.user;
+        console.log("userid", user.id);
 
         //first lets check if the user have enough shares to even be sold in the first place...
         let availableBalance = await listingDataLayer.fetchBalancesForUserArt(user.id, req.body.art_id);
+
+        console.log(availableBalance);
 
         //if there is enough shares... then we create the order
         if (availableBalance >= req.body.share) {
@@ -81,31 +92,34 @@ router.put("/fixed_price_listings/:listing_id", checkIfAuthenticatedJWT, async (
         listingData = listing.toJSON();
 
         // if this order doesn't belong to authenticated user, throw
-        if (user.id != listingData.user_id) {
+        if (user.id != listingData[0].user_id) {
             throw "You are not the owner of this listing...";
         }
 
         // if it is incrementing
-        if (req.body.share > listingData.share) {
+        if (req.body.share > listingData[0].share) {
             // Check if the user have enough shares to spend
-            let extraShare = req.body.share - listingData.share;
-            let availableBalance = await listingDataLayer.fetchBalancesForUserArt(listingData.user_id, listingData.art_id);
+            let extraShare = req.body.share - listingData[0].share;
+            let availableBalance = await listingDataLayer.fetchBalancesForUserArt(listingData[0].user_id, listingData[0].art_id);
             if (extraShare > availableBalance) {
                 throw "You do not have enough shares of the art to sell...";
             } else {
-                await knex("arts_users").where("user_id", listingData.user_id).where("art_id", listingData.art_id).increment("share_in_order", extraShare);
+                await knex("arts_users").where("user_id", listingData[0].user_id).where("art_id", listingData[0].art_id).increment("share_in_order", extraShare);
             }
-            // if it is decrementinh
-        } else if (req.body.share < listingData.share) {
+            // if it is decrementing
+        } else if (req.body.share < listingData[0].share) {
             await knex("arts_users")
-                .where("user_id", listingData.user_id)
-                .where("art_id", listingData.art_id)
-                .decrement("share_in_order", listingData.share - req.body.share);
+                .where("id", listingData[0].user_id)
+                .decrement("share_in_order", listingData[0].share - req.body.share);
         }
 
-        listing.set("price", req.body.price);
-        listing.set("share", req.body.share);
-        listing.save();
+        await knex("fixed_price_listings")
+            .where("id", Number(req.params.listing_id))
+            .update({
+                price: Number(req.body.price),
+                share: req.body.share,
+            });
+
 
         res.send({
             message: "You have successfully updated your listing.",
@@ -128,15 +142,15 @@ router.delete("/fixed_price_listings/:listing_id", checkIfAuthenticatedJWT, asyn
         listingData = listing.toJSON();
 
         // if this order doesn't belong to authenticated user, throw
-        if (user.id != listingData.user_id) {
+        if (user.id != listingData[0].user_id) {
             throw "You are not the owner of this listing...";
         }
 
         //Update the in order amount of the user (decrement)
-        await knex("arts_users").where("user_id", listingData.user_id).where("art_id", listingData.art_id).decrement("share_in_order", listingData.share);
+        await knex("arts_users").where("user_id", listingData[0].user_id).where("art_id", listingData[0].art_id).decrement("share_in_order", listingData[0].share);
 
         //destroy the listing
-        await listing.destroy();
+        await knex("fixed_price_listings").where("id", req.params.listing_id).del();
 
         res.send({
             message: "You have successfully deleted your listing.",

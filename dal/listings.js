@@ -12,14 +12,21 @@ const knex = require("knex")({
     },
 });
 
-const getAllFixedPriceListing = async () => {
-    return await FixedPriceListing.fetchAll();
+const getAllFixedPriceListing = async (userId) => {
+    const fixedPriceListing = await FixedPriceListing.where({
+        user_id: userId,
+    }).fetchAll({
+        require: true,
+        withRelated: ["art"],
+    });
+
+    return fixedPriceListing.toJSON();
 };
 
 async function fetchFixedPriceListing(fetchFixedPriceListingId) {
     const fixedPriceListing = await FixedPriceListing.where({
         id: fetchFixedPriceListingId,
-    }).fetch({
+    }).fetchAll({
         require: true,
         withRelated: ["art", "user"],
     });
@@ -39,12 +46,14 @@ async function fetchFixedPriceListingByArtId(artId) {
 }
 
 async function fetchBalancesForUserArt(userId, artId) {
+    console.log("thjis knex shit happened");
     let balances = await knex.select().from("arts_users").where("user_id", userId).where("art_id", artId);
+    console.log(balances);
 
     return balances[0].total_share - balances[0].share_in_order;
 }
 
-async function fetchBalancesForUserArt(artId) {
+async function fetchBalancesForArt(artId) {
     let balances = await knex.select().from("arts_users").where("art_id", artId);
 
     return balances[0].total_share - balances[0].share_in_order;
@@ -53,6 +62,7 @@ async function fetchBalancesForUserArt(artId) {
 module.exports = {
     getAllFixedPriceListing,
     fetchFixedPriceListing,
-    fetchBalancesForUserArt,
+    fetchBalancesForArt,
     fetchFixedPriceListingByArtId,
+    fetchBalancesForUserArt,
 };

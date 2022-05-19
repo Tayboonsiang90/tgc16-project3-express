@@ -1,13 +1,26 @@
 const express = require("express");
 const router = express.Router();
 
-const { bootstrapField, createArtForm } = require("../forms");
+const { bootstrapField, createArtForm, createOwnerForm } = require("../forms");
 
 // import in the CheckIfAuthenticated middleware
 const { checkIfAuthenticated } = require("../middlewares");
 
 const { Art } = require("../models");
 const dataLayer = require("../dal/arts");
+
+const knex = require("knex")({
+    client: process.env.DB_DRIVER,
+    connection: {
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        host: process.env.DB_HOST,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    },
+});
 
 router.get("/", checkIfAuthenticated, async (req, res) => {
     let arts = await Art.collection().fetch({ withRelated: ["artist", "vault", "tags", "medias"] });
@@ -61,6 +74,37 @@ router.post("/create", async (req, res) => {
         },
         error: async (form) => {
             res.render("arts/create", {
+                form: form.toHTML(bootstrapField),
+            });
+        },
+    });
+});
+
+router.get("/:art_id/addOwner", checkIfAuthenticated, async (req, res) => {
+    let allUsers = await dataLayer.fetchUsers();
+
+    const createOwnerHTML = createOwnerForm(allUsers);
+
+    res.render("arts/addOwner", {
+        form: createOwnerHTML.toHTML(bootstrapField),
+        artsId: req.params.art_id,
+    });
+});
+
+router.post("/:art_id/addOwner", async (req, res) => {
+    let allUsers = await dataLayer.fetchUsers();
+
+    const createOwnerHTML = createOwnerForm(allUsers);
+
+    createOwnerHTML.handle(req, {
+        success: async (form) => {
+            let { user_id, total_share } = form.data;
+            await knex("arts_users").insert({ user_id: user_id, total_share: total_share, art_id: req.params.art_id, share_in_order: 0 });
+
+            res.redirect(`/arts/${req.params.art_id}/owners/`);
+        },
+        error: async (form) => {
+            res.render("arts/addOwner", {
                 form: form.toHTML(bootstrapField),
             });
         },

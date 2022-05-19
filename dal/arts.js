@@ -1,4 +1,8 @@
-const { Art, Artist, Vault, Tag, Media } = require("../models");
+const { Art, Artist, Vault, Tag, Media, User } = require("../models");
+
+async function fetchUsers() {
+    return await User.fetchAll().map((user) => [user.get("id"), user.get("username") + " (" + user.get("email") + ")"]);
+}
 
 async function fetchArtists() {
     return await Artist.fetchAll().map((artist) => {
@@ -42,4 +46,5 @@ module.exports = {
     fetchTags,
     fetchArt,
     getAllArts,
+    fetchUsers,
 };
