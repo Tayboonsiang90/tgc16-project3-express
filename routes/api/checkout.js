@@ -137,7 +137,6 @@ router.post(
                             findExisting = await knex("arts_users").where("user_id", user_id).where("art_id", art_id);
                             console.log(findExisting)
                             console.log(findExisting.length);
-                            console.log(findExisting[0].total_share);
                             if (findExisting.length == 0) {
                                 console.log("length0");
                                 await knex("arts_users").insert({ user_id: user_id, art_id: art_id, total_share: quantity, share_in_order: 0 });
