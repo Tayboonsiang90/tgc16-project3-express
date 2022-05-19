@@ -119,7 +119,7 @@ router.post(
 
                     //Retrieve the listing details
                     let listing = await listingDataLayer.fetchFixedPriceListing(listing_id);
-                    listingData = listing.toJSON();
+                    listingData = listing.toJSON()[0];
                     console.log("Listing Data", listingData);
 
                     console.log(listingData.user_id != user_id);
